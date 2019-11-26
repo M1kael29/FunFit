@@ -28,14 +28,15 @@ public class MainActivity extends Activity implements SensorEventListener {
     TextView stepValue;
     Button resetButton;
     int steps;
-    int savedSteps;
 
+    // setup reset button click listener
     private View.OnClickListener resetClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             resetSteps();
         }
     };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,18 +49,23 @@ public class MainActivity extends Activity implements SensorEventListener {
         resetButton.setOnClickListener(resetClickListener);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
+        // request user permission to use activity sensor
         ActivityCompat.requestPermissions(this, new String[]
                 {Manifest.permission.ACTIVITY_RECOGNITION}, 1);
 
+        // load step data (and other data eventually) on start
         loadData();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        // set status to running (might not need this though)
         running = true;
         Sensor stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
+        // Will inform the users if there is a step counter present or not
         if (stepSensor == null) {
             Toast.makeText(this, "No Step Counter Sensor !", Toast.LENGTH_SHORT).show();
         } else {
@@ -69,12 +75,13 @@ public class MainActivity extends Activity implements SensorEventListener {
 
     }
 
+
     @Override
     protected void onPause() {
         super.onPause();
         running = false;
         sensorManager.unregisterListener(this);
-        saveData();
+        saveData(); // saves the users step data
     }
 
 
@@ -84,6 +91,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 ////        if(running) {
 ////            stepValue.setText(String.valueOf(event.values[0]));
 ////            //steps = Integer.parseInt(stepValue.getText().toString());
+
+            // increment steps and apply to textview on layout
             steps += 1;
             stepValue.setText(String.valueOf(steps));
         //}
@@ -94,6 +103,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
     }
 
+    // saves user data in shared preferences
     public void saveData() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -103,12 +113,14 @@ public class MainActivity extends Activity implements SensorEventListener {
         editor.apply();
     }
 
+    // loads user data from shared preferences
     public void loadData() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         steps = sharedPreferences.getInt(STEPS, 0);
         stepValue.setText(String.valueOf(steps));
     }
 
+    // resets steps and applies to text view
     private void resetSteps() {
         steps = 0;
         stepValue.setText(String.valueOf(steps));
