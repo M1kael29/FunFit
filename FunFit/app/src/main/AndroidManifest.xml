@@ -11,7 +11,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:backupAgent=".FunFitBackupAgent"
+        android:restoreAnyVersion="true">
+        <meta-data android:name="com.google.android.backup.api_key"
+            android:value="AEdPqrEAAAAIrxwDQw3R5gdYvN4ilG14i35ViQVxXT4MfOgQzg" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

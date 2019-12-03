@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity implements SensorEventListener {
 
-    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String SHARED_PREFS = "user_prefs";
     public static final String STEPS = "steps";
 
     boolean running = false;
@@ -49,6 +49,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         resetButton.setOnClickListener(resetClickListener);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
 
         // request user permission to use activity sensor
         ActivityCompat.requestPermissions(this, new String[]
@@ -105,6 +106,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
     // saves user data in shared preferences
     public void saveData() {
+
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -125,4 +127,6 @@ public class MainActivity extends Activity implements SensorEventListener {
         steps = 0;
         stepValue.setText(String.valueOf(steps));
     }
+
+
 }
