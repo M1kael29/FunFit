@@ -2,29 +2,41 @@ package com.example.funfit;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
+@TargetApi(28)
 public class MainActivity extends Activity implements SensorEventListener {
 
-    public static final String SHARED_PREFS = "user_prefs";
+    public static final String SHARED_PREFS = "funfit_prefs";
     public static final String STEPS = "steps";
+    public static final String CHANNEL_ID = "funfit";
 
     boolean running = false;
     SensorManager sensorManager;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
     TextView stepValue;
     Button resetButton;
     int steps;
@@ -43,13 +55,26 @@ public class MainActivity extends Activity implements SensorEventListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.FOREGROUND_SERVICE},
+                2);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.FOREGROUND_SERVICE)
+                == PackageManager.PERMISSION_GRANTED) {
+            this.startForegroundService(new Intent(getApplicationContext(), StepCounterService.class));
+        }
+        else {
+            Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
+        }
+
+
+
+
         resetButton = findViewById(R.id.btnReset);
         stepValue = findViewById(R.id.tv_steps);
 
         resetButton.setOnClickListener(resetClickListener);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
+        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
 
         // request user permission to use activity sensor
         ActivityCompat.requestPermissions(this, new String[]
@@ -64,6 +89,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         super.onResume();
         // set status to running (might not need this though)
         running = true;
+        loadData();
         Sensor stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
         // Will inform the users if there is a step counter present or not
@@ -81,7 +107,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     protected void onPause() {
         super.onPause();
         running = false;
-        sensorManager.unregisterListener(this);
+        //sensorManager.unregisterListener(this);
         saveData(); // saves the users step data
     }
 
@@ -94,9 +120,11 @@ public class MainActivity extends Activity implements SensorEventListener {
 ////            //steps = Integer.parseInt(stepValue.getText().toString());
 
             // increment steps and apply to textview on layout
-            steps += 1;
-            stepValue.setText(String.valueOf(steps));
+//            steps += 1;
+//            stepValue.setText(String.valueOf(steps));
         //}
+        loadData();
+        stepValue.setText(String.valueOf(steps));
     }
 
     @Override
@@ -107,8 +135,8 @@ public class MainActivity extends Activity implements SensorEventListener {
     // saves user data in shared preferences
     public void saveData() {
 
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor = sharedPreferences.edit();
 
         editor.putInt(STEPS, steps);
 
@@ -117,7 +145,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
     // loads user data from shared preferences
     public void loadData() {
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+
         steps = sharedPreferences.getInt(STEPS, 0);
         stepValue.setText(String.valueOf(steps));
     }
@@ -127,6 +155,8 @@ public class MainActivity extends Activity implements SensorEventListener {
         steps = 0;
         stepValue.setText(String.valueOf(steps));
     }
+
+
 
 
 }
