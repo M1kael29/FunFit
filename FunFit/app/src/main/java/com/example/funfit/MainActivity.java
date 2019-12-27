@@ -10,10 +10,12 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -40,6 +42,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     TextView stepValue;
     Button resetButton;
     int steps;
+    //StepsDatabase db = new StepsDatabase(this);
 
     // setup reset button click listener
     private View.OnClickListener resetClickListener = new View.OnClickListener() {
@@ -60,6 +63,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.FOREGROUND_SERVICE)
                 == PackageManager.PERMISSION_GRANTED) {
             this.startForegroundService(new Intent(getApplicationContext(), StepCounterService.class));
+            Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
         }
         else {
             Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
@@ -81,24 +85,25 @@ public class MainActivity extends Activity implements SensorEventListener {
                 {Manifest.permission.ACTIVITY_RECOGNITION}, 1);
 
         // load step data (and other data eventually) on start
-        loadData();
+        //loadData();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         // set status to running (might not need this though)
-        running = true;
+//        running = true;
         loadData();
         Sensor stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-
-        // Will inform the users if there is a step counter present or not
-        if (stepSensor == null) {
-            Toast.makeText(this, "No Step Counter Sensor !", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "There is a step counter sensor!", Toast.LENGTH_SHORT).show();
+//
+//        // Will inform the users if there is a step counter present or not
+//        if (stepSensor == null) {
+//            Toast.makeText(this, "No Step Counter Sensor !", Toast.LENGTH_SHORT).show();
+//        } else {
+//            Toast.makeText(this, "There is a step counter sensor!", Toast.LENGTH_SHORT).show();
             sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_FASTEST);
-        }
+//            stepValue.setText(String.valueOf(steps));
+//        }
 
     }
 
@@ -106,9 +111,9 @@ public class MainActivity extends Activity implements SensorEventListener {
     @Override
     protected void onPause() {
         super.onPause();
-        running = false;
-        //sensorManager.unregisterListener(this);
-        saveData(); // saves the users step data
+//        running = false;
+//        //sensorManager.unregisterListener(this);
+//        saveData(); // saves the users step data
     }
 
 
@@ -123,7 +128,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 //            steps += 1;
 //            stepValue.setText(String.valueOf(steps));
         //}
-        loadData();
+        //db.createStepsEntry();
+        steps = sharedPreferences.getInt(STEPS, 0);
         stepValue.setText(String.valueOf(steps));
     }
 
@@ -147,7 +153,9 @@ public class MainActivity extends Activity implements SensorEventListener {
     public void loadData() {
 
         steps = sharedPreferences.getInt(STEPS, 0);
-        stepValue.setText(String.valueOf(steps));
+
+        //stepValue.setText(String.valueOf(db.getStepsToday()));
+        //stepValue.setText(String.valueOf(steps));
     }
 
     // resets steps and applies to text view
