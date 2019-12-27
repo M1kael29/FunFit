@@ -154,7 +154,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
         steps = sharedPreferences.getInt(STEPS, 0);
 
-        //stepValue.setText(String.valueOf(db.getStepsToday()));
+//        stepValue.setText(String.valueOf(db.getStepsToday()));
         //stepValue.setText(String.valueOf(steps));
     }
 

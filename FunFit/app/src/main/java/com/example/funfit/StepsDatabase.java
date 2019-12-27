@@ -21,13 +21,14 @@ public class StepsDatabase extends SQLiteOpenHelper {
             "creationdate";
 
     private static final String
-            CREATE_TABLE_STEPS_SUMMARY = "CREATE TABLE "
-            + TABLE_STEPS_SUMMARY + "(" + ID + " INTEGER PRIMARY " +
-            "KEY AUTOINCREMENT," + CREATION_DATE + " TEXT," +
-            STEPS_COUNT + "INTEGER" + ")";
+            CREATE_TABLE_STEPS_SUMMARY = "CREATE TABLE " + TABLE_STEPS_SUMMARY + "(" + ID + " " +
+            "INTEGER PRIMARY KEY AUTOINCREMENT," + CREATION_DATE + " TEXT,"+ STEPS_COUNT +
+            " INTEGER"+")";
+
 
     StepsDatabase(final Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        //SQLiteDatabase db = this.getWritableDatabase();
     }
 
     @Override

@@ -27,7 +27,7 @@ public class StepCounterService extends Service implements SensorEventListener {
 
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
-    StepsDatabase db = new StepsDatabase(this);
+    StepsDatabase db;
 
     @Override
     public void onCreate() {
@@ -54,7 +54,10 @@ public class StepCounterService extends Service implements SensorEventListener {
         NotificationManager manager = getSystemService(NotificationManager.class);
         manager.createNotificationChannel(channel);
 
+        db = new StepsDatabase(this);
+
         Toast.makeText(this, "DONE", Toast.LENGTH_SHORT).show();
+
 
 
 
@@ -77,7 +80,7 @@ public class StepCounterService extends Service implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
         steps = (int) event.values[0];
-        //db.createStepsEntry();
+        db.createStepsEntry();
 
         saveData();
     }
