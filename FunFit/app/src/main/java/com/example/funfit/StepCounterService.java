@@ -80,7 +80,7 @@ public class StepCounterService extends Service implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
         steps = (int) event.values[0];
-        db.createStepsEntry();
+        //db.createStepsEntry();
 
         saveData();
     }
@@ -102,7 +102,7 @@ public class StepCounterService extends Service implements SensorEventListener {
         sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
-        editor.putInt(STEPS, db.getStepsToday());
+        //editor.putInt(STEPS, db.getStepsToday());
 
         editor.apply();
     }

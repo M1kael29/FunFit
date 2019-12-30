@@ -40,9 +40,9 @@ public class MainActivity extends Activity implements SensorEventListener {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     TextView stepValue;
-    Button resetButton;
+    Button resetButton, addEntryButton;
     int steps;
-    //StepsDatabase db = new StepsDatabase(this);
+    StepsDatabase db;
 
     // setup reset button click listener
     private View.OnClickListener resetClickListener = new View.OnClickListener() {
@@ -52,30 +52,43 @@ public class MainActivity extends Activity implements SensorEventListener {
         }
     };
 
+    private View.OnClickListener addEntryClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            addEntry();
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.FOREGROUND_SERVICE},
-                2);
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.FOREGROUND_SERVICE)
-                == PackageManager.PERMISSION_GRANTED) {
-            this.startForegroundService(new Intent(getApplicationContext(), StepCounterService.class));
-            Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
-        }
-        else {
-            Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
-        }
+        db = new StepsDatabase(this);
+
+//        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.
+//                        FOREGROUND_SERVICE},
+//                2);
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.FOREGROUND_SERVICE)
+//                == PackageManager.PERMISSION_GRANTED) {
+//            this.startForegroundService(new Intent(getApplicationContext(), StepCounterService.
+//                    class));
+//            Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
+//        }
+//        else {
+//            Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
+//        }
 
 
 
 
         resetButton = findViewById(R.id.btnReset);
         stepValue = findViewById(R.id.tv_steps);
+        addEntryButton = findViewById(R.id.btnAddEntry);
 
         resetButton.setOnClickListener(resetClickListener);
+        addEntryButton.setOnClickListener(addEntryClickListener);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
@@ -84,26 +97,18 @@ public class MainActivity extends Activity implements SensorEventListener {
         ActivityCompat.requestPermissions(this, new String[]
                 {Manifest.permission.ACTIVITY_RECOGNITION}, 1);
 
-        // load step data (and other data eventually) on start
-        //loadData();
+
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // set status to running (might not need this though)
-//        running = true;
-        loadData();
+
         Sensor stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-//
-//        // Will inform the users if there is a step counter present or not
-//        if (stepSensor == null) {
-//            Toast.makeText(this, "No Step Counter Sensor !", Toast.LENGTH_SHORT).show();
-//        } else {
-//            Toast.makeText(this, "There is a step counter sensor!", Toast.LENGTH_SHORT).show();
-            sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_FASTEST);
-//            stepValue.setText(String.valueOf(steps));
-//        }
+
+        sensorManager.registerListener(this, stepSensor, SensorManager.
+                    SENSOR_DELAY_FASTEST);
 
     }
 
@@ -111,9 +116,6 @@ public class MainActivity extends Activity implements SensorEventListener {
     @Override
     protected void onPause() {
         super.onPause();
-//        running = false;
-//        //sensorManager.unregisterListener(this);
-//        saveData(); // saves the users step data
     }
 
 
@@ -129,7 +131,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 //            stepValue.setText(String.valueOf(steps));
         //}
         //db.createStepsEntry();
-        steps = sharedPreferences.getInt(STEPS, 0);
+        //steps = sharedPreferences.getInt(STEPS, 0);
+        steps = (int) event.values[0];
         stepValue.setText(String.valueOf(steps));
     }
 
@@ -162,6 +165,14 @@ public class MainActivity extends Activity implements SensorEventListener {
     private void resetSteps() {
         steps = 0;
         stepValue.setText(String.valueOf(steps));
+    }
+
+    private void addEntry() {
+        boolean isInserted = db.insertData(steps);
+        if(isInserted)
+            Toast.makeText(this, "Data inserted", Toast.LENGTH_LONG).show();
+        else
+            Toast.makeText(this, "Data not inserted", Toast.LENGTH_LONG).show();
     }
 
 
