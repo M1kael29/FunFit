@@ -8,13 +8,17 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -28,6 +32,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Calendar;
+
 @TargetApi(28)
 public class MainActivity extends Activity implements SensorEventListener {
 
@@ -40,7 +46,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     TextView stepValue;
-    Button resetButton, addEntryButton;
+    Button resetButton, addEntryButton, viewAllButton;
     int steps;
     StepsDatabase db;
 
@@ -58,6 +64,20 @@ public class MainActivity extends Activity implements SensorEventListener {
             addEntry();
         }
     };
+
+    private View.OnClickListener viewAllClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            viewAll();
+        }
+    };
+
+//    private View.OnClickListener updateClickListener = new View.OnClickListener() {
+//        @Override
+//        public void onClick(View v) {
+//            updateSteps();
+//        }
+//    };
 
 
     @Override
@@ -80,15 +100,17 @@ public class MainActivity extends Activity implements SensorEventListener {
 //            Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
 //        }
 
-
+        setupAlarmManager(1, 25);
 
 
         resetButton = findViewById(R.id.btnReset);
         stepValue = findViewById(R.id.tv_steps);
         addEntryButton = findViewById(R.id.btnAddEntry);
+        viewAllButton = findViewById(R.id.btnViewAll);
 
         resetButton.setOnClickListener(resetClickListener);
         addEntryButton.setOnClickListener(addEntryClickListener);
+        viewAllButton.setOnClickListener(viewAllClickListener);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
@@ -175,7 +197,47 @@ public class MainActivity extends Activity implements SensorEventListener {
             Toast.makeText(this, "Data not inserted", Toast.LENGTH_LONG).show();
     }
 
+    private void viewAll() {
+        Cursor res = db.getAllData();
+        if(res.getCount() == 0) {
+            showMessage("Error","Nothing found");
+            return;
+        }
 
+        StringBuffer buffer = new StringBuffer();
+        while (res.moveToNext()) {
+            buffer.append("Id: " + res.getString(0)+ "\n");
+            buffer.append("Date: " + res.getString(1)+ "\n");
+            buffer.append("Steps: " + res.getString(2)+ "\n\n");
+        }
 
+        showMessage("Data",buffer.toString());
+    }
 
+    public void showMessage(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.show();
+    }
+
+//    public void updateSteps() {
+//        db.updateData(steps);
+//    }
+
+    private void setupAlarmManager(int hour, int minute) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, hour);
+        c.set(Calendar.MINUTE, minute);
+        c.set(Calendar.SECOND, 0);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, FunFitBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 3, intent, 0);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+    }
+
+    public int getSteps() {
+        return steps;
+    }
 }

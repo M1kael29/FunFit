@@ -21,7 +21,7 @@ import java.util.SimpleTimeZone;
 
 public class StepsDatabase extends SQLiteOpenHelper {
 
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyymmdd_hhmmss", Locale.getDefault());
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd", Locale.getDefault());
 
     public static final String DATABASE_NAME = "FunFit";
     public static final String TABLE_NAME = "Steps";
@@ -56,8 +56,8 @@ public class StepsDatabase extends SQLiteOpenHelper {
         //create database instance
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        String currentDateAndTime = sdf.format(new Date());
-        contentValues.put(DATE, currentDateAndTime);
+        String currentDate = sdf.format(new Date());
+        contentValues.put(DATE, currentDate);
         contentValues.put(STEPCOUNT, stepCount);
 
         long result = db.insert(TABLE_NAME, null, contentValues);
@@ -65,6 +65,29 @@ public class StepsDatabase extends SQLiteOpenHelper {
             return false;
         else
             return true;
+    }
+
+   //public boolean updateData(int stepCount) {
+        // check if todays date is the same as an entry in db
+            // while cursor moveToNext
+                // if current date == a date
+                    //update that date entry with new step value
+                //else
+                    //add new value for that date
+
+
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        ContentValues contentValues = new ContentValues();
+//        contentValues.put(DATE, date);
+//        contentValues.put(STEPCOUNT, stepCount);
+//        db.update(TABLE_NAME, contentValues, "DATE = ?",new String[] { date });
+//        return true;
+  //  }
+
+    public Cursor getAllData () {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        return res;
     }
 
 }

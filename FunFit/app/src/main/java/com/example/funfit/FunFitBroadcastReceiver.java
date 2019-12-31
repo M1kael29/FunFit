@@ -13,6 +13,8 @@ public class FunFitBroadcastReceiver extends BroadcastReceiver {
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
     public static final String TEST_VALUE = "testing";
+    StepsDatabase db;
+    MainActivity main;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -28,5 +30,10 @@ public class FunFitBroadcastReceiver extends BroadcastReceiver {
         if(Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
             Toast.makeText(context, "BOOT COMPLETED", Toast.LENGTH_SHORT).show();
         }
+
+        Toast.makeText(context, "RING RING", Toast.LENGTH_SHORT).show();
+        db = new StepsDatabase(context);
+        db.insertData(69);
+
     }
 }
