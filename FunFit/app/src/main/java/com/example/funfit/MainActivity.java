@@ -27,12 +27,17 @@ import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 @TargetApi(28)
 public class MainActivity extends Activity implements SensorEventListener {
@@ -100,6 +105,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 //            Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
 //        }
 
+
+
         setupAlarmManager(1, 25);
 
 
@@ -118,6 +125,19 @@ public class MainActivity extends Activity implements SensorEventListener {
         // request user permission to use activity sensor
         ActivityCompat.requestPermissions(this, new String[]
                 {Manifest.permission.ACTIVITY_RECOGNITION}, 1);
+
+
+
+
+        String aDate = "1992_12_28";
+        SimpleDateFormat newSdf = new SimpleDateFormat("yyyy_MM_dd");
+        try {
+            Date bloop = newSdf.parse(aDate);
+            Log.d("DEBUG================", bloop.toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
 
 
 

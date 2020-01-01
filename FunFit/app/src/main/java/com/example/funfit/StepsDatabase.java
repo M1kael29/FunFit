@@ -9,19 +9,25 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.SimpleTimeZone;
+import java.util.logging.Logger;
 
 public class StepsDatabase extends SQLiteOpenHelper {
 
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd", Locale.getDefault());
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+
+
 
     public static final String DATABASE_NAME = "FunFit";
     public static final String TABLE_NAME = "Steps";
@@ -43,7 +49,6 @@ public class StepsDatabase extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_NAME + " (" + ENTRY_ID + " INTEGER PRIMARY KEY" +
                 " AUTOINCREMENT, " + DATE + " TEXT," + STEPCOUNT + " INTEGER);");
-
     }
 
     @Override
@@ -68,6 +73,9 @@ public class StepsDatabase extends SQLiteOpenHelper {
     }
 
    //public boolean updateData(int stepCount) {
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd", Locale.getDefault());
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        Cursor res = db.query(TABLE_NAME, "Date", sdf == )
         // check if todays date is the same as an entry in db
             // while cursor moveToNext
                 // if current date == a date
@@ -82,11 +90,12 @@ public class StepsDatabase extends SQLiteOpenHelper {
 //        contentValues.put(STEPCOUNT, stepCount);
 //        db.update(TABLE_NAME, contentValues, "DATE = ?",new String[] { date });
 //        return true;
-  //  }
+        //}
 
     public Cursor getAllData () {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE Date = ?",
+                new String[]{"2020-01-01"});
         return res;
     }
 
