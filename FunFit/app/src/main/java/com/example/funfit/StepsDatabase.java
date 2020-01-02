@@ -75,29 +75,14 @@ public class StepsDatabase extends SQLiteOpenHelper {
 
 
 
-   //public boolean updateData(int stepCount) {
-        //open db
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        //get todays date
-//        Date todaysDate = new Date();
-//        SimpleDateFormat simpleDate = new SimpleDateFormat();
-
-
-        // check if todays date is the same as an entry in db
-            // while cursor moveToNext
-                // if current date == a date
-                    //update that date entry with new step value
-                //else
-                    //add new value for that date
-
-
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        ContentValues contentValues = new ContentValues();
-//        contentValues.put(DATE, date);
-//        contentValues.put(STEPCOUNT, stepCount);
-//        db.update(TABLE_NAME, contentValues, "DATE = ?",new String[] { date });
-//        return true;
-        //}
+   public boolean updateData(String date, int stepCount) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DATE, date);
+        contentValues.put(STEPCOUNT, stepCount);
+        db.update(TABLE_NAME, contentValues, "DATE = ?",new String[] { date });
+        return true;
+    }
 
     public Cursor getAllData () {
         SQLiteDatabase db = this.getWritableDatabase();

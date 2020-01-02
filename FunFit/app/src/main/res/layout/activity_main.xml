@@ -62,10 +62,10 @@
         app:layout_constraintStart_toEndOf="@+id/btnAddEntry" />
 
     <Button
-        android:id="@+id/btnUpdate"
+        android:id="@+id/btnCurrentDay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="update"
+        android:text="Current day"
         tools:layout_editor_absoluteX="38dp"
         tools:layout_editor_absoluteY="604dp" />
 

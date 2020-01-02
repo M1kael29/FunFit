@@ -51,7 +51,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     TextView stepValue;
-    Button resetButton, addEntryButton, viewAllButton;
+    Button resetButton, addEntryButton, viewAllButton, currentDayButton;
     int steps;
     StepsDatabase db;
 
@@ -77,12 +77,12 @@ public class MainActivity extends Activity implements SensorEventListener {
         }
     };
 
-//    private View.OnClickListener updateClickListener = new View.OnClickListener() {
-//        @Override
-//        public void onClick(View v) {
-//            updateSteps();
-//        }
-//    };
+    private View.OnClickListener checkForCurrentDayClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            addSteps();
+        }
+    };
 
 
     @Override
@@ -107,17 +107,19 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 
 
-        setupAlarmManager(14, 32);
+        setupAlarmManager(18, 34);
 
 
         resetButton = findViewById(R.id.btnReset);
         stepValue = findViewById(R.id.tv_steps);
         addEntryButton = findViewById(R.id.btnAddEntry);
         viewAllButton = findViewById(R.id.btnViewAll);
+        currentDayButton = findViewById(R.id.btnCurrentDay);
 
         resetButton.setOnClickListener(resetClickListener);
         addEntryButton.setOnClickListener(addEntryClickListener);
         viewAllButton.setOnClickListener(viewAllClickListener);
+        currentDayButton.setOnClickListener(checkForCurrentDayClickListener);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
@@ -138,12 +140,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 //            e.printStackTrace();
 //        }
 
-        if(checkIfDayExists()) {
-            Log.d("DEBUG================", "true");
-        }
-        else {
-            Log.d("DEBUG================", "false");
-        }
+
 
 
 
@@ -224,6 +221,15 @@ public class MainActivity extends Activity implements SensorEventListener {
             Toast.makeText(this, "Data not inserted", Toast.LENGTH_LONG).show();
     }
 
+    public void updateEntry() {
+        Date todaysDate = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+
+        String stringDate = sdf.format(todaysDate);
+        db.updateData(stringDate, steps);
+        Toast.makeText(this, "Data updated", Toast.LENGTH_LONG).show();
+    }
+
     private void viewAll() {
         Cursor res = db.getAllData();
         if(res.getCount() == 0) {
@@ -249,9 +255,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         builder.show();
     }
 
-//    public void updateSteps() {
-//        db.updateData(steps);
-//    }
+
 
     private void setupAlarmManager(int hour, int minute) {
         Calendar c = Calendar.getInstance();
@@ -281,14 +285,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         //query db and look for any entries that match stringDate
         Cursor res = sqldb.rawQuery("SELECT * FROM " + db.TABLE_NAME + " WHERE Date = ?",
                 new String[]{stringDate});
-        StringBuffer buffer = new StringBuffer();
-        while (res.moveToNext()) {
-            buffer.append("Id: " + res.getString(0)+ "\n");
-            buffer.append("Date: " + res.getString(1)+ "\n");
-            buffer.append("Steps: " + res.getString(2)+ "\n\n");
-        }
-
-        showMessage("Data",buffer.toString());
+        
 
 
         if(res.getCount() == 0) {
@@ -297,6 +294,17 @@ public class MainActivity extends Activity implements SensorEventListener {
         }
         else {
             return true;
+        }
+    }
+
+    private void addSteps() {
+        if(checkIfDayExists()) {
+            Log.d("DEBUG================", "true");
+            updateEntry();
+        }
+        else {
+            Log.d("DEBUG================", "false");
+            addEntry();
         }
     }
 }
