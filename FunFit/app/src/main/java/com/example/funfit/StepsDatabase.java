@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 
 public class StepsDatabase extends SQLiteOpenHelper {
 
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
 
 
 
@@ -61,6 +61,7 @@ public class StepsDatabase extends SQLiteOpenHelper {
         //create database instance
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
         String currentDate = sdf.format(new Date());
         contentValues.put(DATE, currentDate);
         contentValues.put(STEPCOUNT, stepCount);
@@ -72,10 +73,16 @@ public class StepsDatabase extends SQLiteOpenHelper {
             return true;
     }
 
+
+
    //public boolean updateData(int stepCount) {
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd", Locale.getDefault());
+        //open db
 //        SQLiteDatabase db = this.getWritableDatabase();
-//        Cursor res = db.query(TABLE_NAME, "Date", sdf == )
+//        //get todays date
+//        Date todaysDate = new Date();
+//        SimpleDateFormat simpleDate = new SimpleDateFormat();
+
+
         // check if todays date is the same as an entry in db
             // while cursor moveToNext
                 // if current date == a date
@@ -94,8 +101,7 @@ public class StepsDatabase extends SQLiteOpenHelper {
 
     public Cursor getAllData () {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE Date = ?",
-                new String[]{"2020-01-01"});
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
         return res;
     }
 

@@ -107,7 +107,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 
 
-        setupAlarmManager(1, 25);
+        setupAlarmManager(14, 32);
 
 
         resetButton = findViewById(R.id.btnReset);
@@ -129,13 +129,20 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 
 
-        String aDate = "1992_12_28";
-        SimpleDateFormat newSdf = new SimpleDateFormat("yyyy_MM_dd");
-        try {
-            Date bloop = newSdf.parse(aDate);
-            Log.d("DEBUG================", bloop.toString());
-        } catch (ParseException e) {
-            e.printStackTrace();
+//        String aDate = "1992_12_28";
+//        SimpleDateFormat newSdf = new SimpleDateFormat("yyyy_MM_dd");
+//        try {
+//            Date bloop = newSdf.parse(aDate);
+//            Log.d("DEBUG================", bloop.toString());
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+
+        if(checkIfDayExists()) {
+            Log.d("DEBUG================", "true");
+        }
+        else {
+            Log.d("DEBUG================", "false");
         }
 
 
@@ -259,5 +266,37 @@ public class MainActivity extends Activity implements SensorEventListener {
 
     public int getSteps() {
         return steps;
+    }
+
+    private boolean checkIfDayExists() {
+        // gets todays date and converts it to required format and a string
+        SQLiteDatabase sqldb = db.getWritableDatabase();
+        Date todaysDate = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+
+        String stringDate = sdf.format(todaysDate);
+        Log.d("DEBUG================", stringDate);
+
+
+        //query db and look for any entries that match stringDate
+        Cursor res = sqldb.rawQuery("SELECT * FROM " + db.TABLE_NAME + " WHERE Date = ?",
+                new String[]{stringDate});
+        StringBuffer buffer = new StringBuffer();
+        while (res.moveToNext()) {
+            buffer.append("Id: " + res.getString(0)+ "\n");
+            buffer.append("Date: " + res.getString(1)+ "\n");
+            buffer.append("Steps: " + res.getString(2)+ "\n\n");
+        }
+
+        showMessage("Data",buffer.toString());
+
+
+        if(res.getCount() == 0) {
+            //there are no entries
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 }
