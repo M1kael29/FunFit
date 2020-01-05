@@ -16,6 +16,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -54,6 +55,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     Button resetButton, addEntryButton, viewAllButton, currentDayButton;
     int steps;
     StepsDatabase db;
+    FunFitBroadcastReceiver broadcastReceiver = new FunFitBroadcastReceiver();
 
     // setup reset button click listener
     private View.OnClickListener resetClickListener = new View.OnClickListener() {
@@ -141,7 +143,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 //        }
 
 
-
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SHUTDOWN);
+        registerReceiver(broadcastReceiver, filter);
+        Log.d("DEBUG================", "I got to here");
 
 
 
@@ -155,6 +159,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
         sensorManager.registerListener(this, stepSensor, SensorManager.
                     SENSOR_DELAY_FASTEST);
+        loadData();
 
     }
 
@@ -178,8 +183,11 @@ public class MainActivity extends Activity implements SensorEventListener {
         //}
         //db.createStepsEntry();
         //steps = sharedPreferences.getInt(STEPS, 0);
-        steps = (int) event.values[0];
+        steps++;
+        saveData();
+        addSteps();
         stepValue.setText(String.valueOf(steps));
+
     }
 
     @Override
@@ -297,7 +305,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         }
     }
 
-    private void addSteps() {
+    public void addSteps() {
         if(checkIfDayExists()) {
             Log.d("DEBUG================", "true");
             updateEntry();
