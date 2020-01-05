@@ -61,7 +61,7 @@ public class StepsDatabase extends SQLiteOpenHelper {
         //create database instance
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-ww-uu-WW", Locale.getDefault());
         String currentDate = sdf.format(new Date());
         contentValues.put(DATE, currentDate);
         contentValues.put(STEPCOUNT, stepCount);

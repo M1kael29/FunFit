@@ -152,11 +152,11 @@ public class MainActivity extends Activity implements SensorEventListener {
     protected void onResume() {
         super.onResume();
 
-//        Sensor stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-//
-//        sensorManager.registerListener(this, stepSensor, SensorManager.
-//                    SENSOR_DELAY_FASTEST);
-//        loadData();
+        Sensor stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+
+        sensorManager.registerListener(this, stepSensor, SensorManager.
+                    SENSOR_DELAY_FASTEST);
+        loadData();
 
     }
 
@@ -180,10 +180,10 @@ public class MainActivity extends Activity implements SensorEventListener {
         //}
         //db.createStepsEntry();
         //steps = sharedPreferences.getInt(STEPS, 0);
-//        steps++;
-//        saveData();
-//        addSteps();
-//        stepValue.setText(String.valueOf(steps));
+        steps++;
+        saveData();
+        addSteps();
+        stepValue.setText(String.valueOf(steps));
 
     }
 
@@ -228,7 +228,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
     public void updateEntry() {
         Date todaysDate = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-ww-uu-WW");
 
         String stringDate = sdf.format(todaysDate);
         db.updateData(stringDate, steps);
@@ -281,7 +281,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         // gets todays date and converts it to required format and a string
         SQLiteDatabase sqldb = db.getWritableDatabase();
         Date todaysDate = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-ww-uu-WW");
 
         String stringDate = sdf.format(todaysDate);
         Log.d("DEBUG================", stringDate);
