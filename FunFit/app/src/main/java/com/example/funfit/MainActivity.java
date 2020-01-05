@@ -47,7 +47,6 @@ public class MainActivity extends Activity implements SensorEventListener {
     public static final String STEPS = "steps";
     public static final String CHANNEL_ID = "funfit";
 
-    boolean running = false;
     SensorManager sensorManager;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
@@ -56,6 +55,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     int steps;
     StepsDatabase db;
     FunFitBroadcastReceiver broadcastReceiver = new FunFitBroadcastReceiver();
+    ShutdownReceiver shutdownReceiver = new ShutdownReceiver();
 
     // setup reset button click listener
     private View.OnClickListener resetClickListener = new View.OnClickListener() {
@@ -142,12 +142,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 //            e.printStackTrace();
 //        }
 
-
-        IntentFilter filter = new IntentFilter(Intent.ACTION_SHUTDOWN);
-        registerReceiver(broadcastReceiver, filter);
-        Log.d("DEBUG================", "I got to here");
-
-
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_SHUTDOWN);
+        registerReceiver(shutdownReceiver, filter);
 
     }
 
@@ -155,11 +152,11 @@ public class MainActivity extends Activity implements SensorEventListener {
     protected void onResume() {
         super.onResume();
 
-        Sensor stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-
-        sensorManager.registerListener(this, stepSensor, SensorManager.
-                    SENSOR_DELAY_FASTEST);
-        loadData();
+//        Sensor stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+//
+//        sensorManager.registerListener(this, stepSensor, SensorManager.
+//                    SENSOR_DELAY_FASTEST);
+//        loadData();
 
     }
 
@@ -183,10 +180,10 @@ public class MainActivity extends Activity implements SensorEventListener {
         //}
         //db.createStepsEntry();
         //steps = sharedPreferences.getInt(STEPS, 0);
-        steps++;
-        saveData();
-        addSteps();
-        stepValue.setText(String.valueOf(steps));
+//        steps++;
+//        saveData();
+//        addSteps();
+//        stepValue.setText(String.valueOf(steps));
 
     }
 
