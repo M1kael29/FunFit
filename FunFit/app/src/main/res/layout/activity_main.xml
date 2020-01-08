@@ -36,41 +36,51 @@
         android:id="@+id/btnReset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="108dp"
+        android:layout_marginTop="32dp"
         android:text="Reset"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.099"
+        app:layout_constraintHorizontal_bias="0.622"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btnAddEntry"
+        android:id="@+id/btnUpdateEntry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginBottom="648dp"
-        android:text="Add entry"
+        android:text="add or update"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/btnCurrentDay"
+        android:id="@+id/btnDay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:text="Current day"
+        android:layout_marginTop="25dp"
+        android:text="Today"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnReset" />
+        app:layout_constraintTop_toBottomOf="@+id/btnUpdateEntry" />
 
     <Button
-        android:id="@+id/btnViewAll"
+        android:id="@+id/btnWeek"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="84dp"
-        android:text="View All"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnCurrentDay" />
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="27dp"
+        android:text="week"
+        app:layout_constraintStart_toEndOf="@+id/btnUpdateEntry"
+        app:layout_constraintTop_toBottomOf="@+id/btnUpdateEntry" />
+
+    <Button
+        android:id="@+id/btnMonth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="35dp"
+        android:text="month"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnWeek" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

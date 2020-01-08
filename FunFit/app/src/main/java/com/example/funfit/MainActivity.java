@@ -1,32 +1,23 @@
 package com.example.funfit;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -34,11 +25,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 @TargetApi(28)
 public class MainActivity extends Activity implements SensorEventListener {
@@ -51,7 +40,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     TextView stepValue;
-    Button resetButton, addEntryButton, viewAllButton, currentDayButton;
+    Button resetButton, todayButton, updateEntryButton;
     int steps;
     StepsDatabase db;
     FunFitBroadcastReceiver broadcastReceiver = new FunFitBroadcastReceiver();
@@ -65,21 +54,14 @@ public class MainActivity extends Activity implements SensorEventListener {
         }
     };
 
-    private View.OnClickListener addEntryClickListener = new View.OnClickListener() {
+    private View.OnClickListener todayClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            addEntry();
+            viewDay();
         }
     };
 
-    private View.OnClickListener viewAllClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            viewAll();
-        }
-    };
-
-    private View.OnClickListener checkForCurrentDayClickListener = new View.OnClickListener() {
+    private View.OnClickListener updateEntryClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             addSteps();
@@ -109,19 +91,17 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 
 
-        setupAlarmManager(18, 34);
+        setupAlarmManager(15, 58);
 
 
         resetButton = findViewById(R.id.btnReset);
         stepValue = findViewById(R.id.tv_steps);
-        addEntryButton = findViewById(R.id.btnAddEntry);
-        viewAllButton = findViewById(R.id.btnViewAll);
-        currentDayButton = findViewById(R.id.btnCurrentDay);
+        todayButton = findViewById(R.id.btnDay);
+        updateEntryButton = findViewById(R.id.btnUpdateEntry);
 
         resetButton.setOnClickListener(resetClickListener);
-        addEntryButton.setOnClickListener(addEntryClickListener);
-        viewAllButton.setOnClickListener(viewAllClickListener);
-        currentDayButton.setOnClickListener(checkForCurrentDayClickListener);
+        todayButton.setOnClickListener(todayClickListener);
+        updateEntryButton.setOnClickListener(updateEntryClickListener);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
@@ -130,17 +110,6 @@ public class MainActivity extends Activity implements SensorEventListener {
         ActivityCompat.requestPermissions(this, new String[]
                 {Manifest.permission.ACTIVITY_RECOGNITION}, 1);
 
-
-
-
-//        String aDate = "1992_12_28";
-//        SimpleDateFormat newSdf = new SimpleDateFormat("yyyy_MM_dd");
-//        try {
-//            Date bloop = newSdf.parse(aDate);
-//            Log.d("DEBUG================", bloop.toString());
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SHUTDOWN);
@@ -169,22 +138,10 @@ public class MainActivity extends Activity implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-//        Toast.makeText(this, "onSensorChanged!!!", Toast.LENGTH_LONG).show();
-////        if(running) {
-////            stepValue.setText(String.valueOf(event.values[0]));
-////            //steps = Integer.parseInt(stepValue.getText().toString());
-
-            // increment steps and apply to textview on layout
-//            steps += 1;
-//            stepValue.setText(String.valueOf(steps));
-        //}
-        //db.createStepsEntry();
-        //steps = sharedPreferences.getInt(STEPS, 0);
         steps++;
         saveData();
         addSteps();
         stepValue.setText(String.valueOf(steps));
-
     }
 
     @Override
@@ -194,22 +151,14 @@ public class MainActivity extends Activity implements SensorEventListener {
 
     // saves user data in shared preferences
     public void saveData() {
-
-
         editor = sharedPreferences.edit();
-
         editor.putInt(STEPS, steps);
-
         editor.apply();
     }
 
     // loads user data from shared preferences
     public void loadData() {
-
         steps = sharedPreferences.getInt(STEPS, 0);
-
-//        stepValue.setText(String.valueOf(db.getStepsToday()));
-        //stepValue.setText(String.valueOf(steps));
     }
 
     // resets steps and applies to text view
@@ -235,7 +184,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         Toast.makeText(this, "Data updated", Toast.LENGTH_LONG).show();
     }
 
-    private void viewAll() {
+    private void viewDay() {
         Cursor res = db.getAllData();
         if(res.getCount() == 0) {
             showMessage("Error","Nothing found");
@@ -277,6 +226,20 @@ public class MainActivity extends Activity implements SensorEventListener {
         return steps;
     }
 
+
+
+    public void addSteps() {
+        Log.d("DEBUG================", "got here");
+        if(checkIfDayExists()) {
+            Log.d("DEBUG================", "true");
+            updateEntry();
+        }
+        else {
+            Log.d("DEBUG================", "false");
+            addEntry();
+        }
+    }
+
     private boolean checkIfDayExists() {
         // gets todays date and converts it to required format and a string
         SQLiteDatabase sqldb = db.getWritableDatabase();
@@ -290,8 +253,6 @@ public class MainActivity extends Activity implements SensorEventListener {
         //query db and look for any entries that match stringDate
         Cursor res = sqldb.rawQuery("SELECT * FROM " + db.TABLE_NAME + " WHERE Date = ?",
                 new String[]{stringDate});
-        
-
 
         if(res.getCount() == 0) {
             //there are no entries
@@ -299,17 +260,6 @@ public class MainActivity extends Activity implements SensorEventListener {
         }
         else {
             return true;
-        }
-    }
-
-    public void addSteps() {
-        if(checkIfDayExists()) {
-            Log.d("DEBUG================", "true");
-            updateEntry();
-        }
-        else {
-            Log.d("DEBUG================", "false");
-            addEntry();
         }
     }
 }

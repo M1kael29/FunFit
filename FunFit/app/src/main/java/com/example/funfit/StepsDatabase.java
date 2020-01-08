@@ -90,4 +90,23 @@ public class StepsDatabase extends SQLiteOpenHelper {
         return res;
     }
 
+    public Cursor getToday () {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        return res;
+    }
+
+//    public Cursor getWeek () {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+//        return res;
+//    }
+//
+//    public Cursor getWeek () {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+//        return res;
+//    }
+
+
 }
