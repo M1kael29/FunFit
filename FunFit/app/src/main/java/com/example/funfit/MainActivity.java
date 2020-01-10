@@ -41,7 +41,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     TextView stepValue;
-    Button resetButton, todayButton, updateEntryButton;
+    Button resetButton, todayButton, weekButton, monthButton, allTimeButton, updateEntryButton;
     int steps;
     StepsDatabase db;
     FunFitBroadcastReceiver broadcastReceiver = new FunFitBroadcastReceiver();
@@ -59,6 +59,27 @@ public class MainActivity extends Activity implements SensorEventListener {
         @Override
         public void onClick(View v) {
             viewDay();
+        }
+    };
+
+    private View.OnClickListener weekClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            viewWeek();
+        }
+    };
+
+    private View.OnClickListener monthClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            viewMonth();
+        }
+    };
+
+    private View.OnClickListener allTimeClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            viewAllTime();
         }
     };
 
@@ -98,10 +119,16 @@ public class MainActivity extends Activity implements SensorEventListener {
         resetButton = findViewById(R.id.btnReset);
         stepValue = findViewById(R.id.tv_steps);
         todayButton = findViewById(R.id.btnDay);
+        weekButton = findViewById(R.id.btnWeek);
+        monthButton = findViewById(R.id.btnMonth);
+        allTimeButton = findViewById(R.id.btnAllTime);
         updateEntryButton = findViewById(R.id.btnUpdateEntry);
 
         resetButton.setOnClickListener(resetClickListener);
         todayButton.setOnClickListener(todayClickListener);
+        weekButton.setOnClickListener(weekClickListener);
+        monthButton.setOnClickListener(monthClickListener);
+        allTimeButton.setOnClickListener(allTimeClickListener);
         updateEntryButton.setOnClickListener(updateEntryClickListener);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -194,6 +221,29 @@ public class MainActivity extends Activity implements SensorEventListener {
         Toast.makeText(this, "Data updated", Toast.LENGTH_LONG).show();
     }
 
+
+
+    private void viewAllTime() {
+
+        Cursor res = db.getAllData();
+        if(res.getCount() == 0) {
+            showMessage("Error","Nothing found");
+            return;
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        while (res.moveToNext()) {
+            buffer.append("Id: " + res.getString(0)+ "\n");
+            buffer.append("Day: " + res.getString(1)+ "\n");
+            buffer.append("Month: " + res.getString(2)+ "\n");
+            buffer.append("Year: " + res.getString(3)+ "\n");
+            buffer.append("Week: " + res.getString(4)+ "\n");
+            buffer.append("Steps: " + res.getString(5)+ "\n\n");
+        }
+
+        showMessage("Data",buffer.toString());
+    }
+
     private void viewDay() {
         Date currentDate = new Date();
         // Day
@@ -206,6 +256,64 @@ public class MainActivity extends Activity implements SensorEventListener {
         sdf = new SimpleDateFormat("yyyy", Locale.getDefault());
         String currentYear = sdf.format(currentDate);
         Cursor res = db.getToday(currentDay, currentMonth, currentYear);
+        if(res.getCount() == 0) {
+            showMessage("Error","Nothing found");
+            return;
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        while (res.moveToNext()) {
+            buffer.append("Id: " + res.getString(0)+ "\n");
+            buffer.append("Day: " + res.getString(1)+ "\n");
+            buffer.append("Month: " + res.getString(2)+ "\n");
+            buffer.append("Year: " + res.getString(3)+ "\n");
+            buffer.append("Week: " + res.getString(4)+ "\n");
+            buffer.append("Steps: " + res.getString(5)+ "\n\n");
+        }
+
+        showMessage("Data",buffer.toString());
+    }
+
+    private void viewWeek() {
+        Date currentDate = new Date();
+        // Week
+        SimpleDateFormat sdf = new SimpleDateFormat("ww", Locale.getDefault());
+        String currentWeek = sdf.format(currentDate);
+        // Month
+        sdf = new SimpleDateFormat("MM", Locale.getDefault());
+        String currentMonth = sdf.format(currentDate);
+        // Year
+        sdf = new SimpleDateFormat("yyyy", Locale.getDefault());
+        String currentYear = sdf.format(currentDate);
+        Cursor res = db.getWeek(currentWeek, currentMonth, currentYear);
+        if(res.getCount() == 0) {
+            showMessage("Error","Nothing found");
+            return;
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        while (res.moveToNext()) {
+            buffer.append("Id: " + res.getString(0)+ "\n");
+            buffer.append("Day: " + res.getString(1)+ "\n");
+            buffer.append("Month: " + res.getString(2)+ "\n");
+            buffer.append("Year: " + res.getString(3)+ "\n");
+            buffer.append("Week: " + res.getString(4)+ "\n");
+            buffer.append("Steps: " + res.getString(5)+ "\n\n");
+        }
+
+        showMessage("Data",buffer.toString());
+    }
+
+    private void viewMonth() {
+        Date currentDate = new Date();
+        // Month
+        SimpleDateFormat sdf = new SimpleDateFormat("MM", Locale.getDefault());
+        String currentMonth = sdf.format(currentDate);
+
+        // Year
+        sdf = new SimpleDateFormat("yyyy", Locale.getDefault());
+        String currentYear = sdf.format(currentDate);
+        Cursor res = db.getMonth(currentMonth, currentYear);
         if(res.getCount() == 0) {
             showMessage("Error","Nothing found");
             return;
