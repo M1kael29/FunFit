@@ -32,7 +32,10 @@ public class StepsDatabase extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "FunFit";
     public static final String TABLE_NAME = "Steps";
     public static final String ENTRY_ID = "EntryID";
-    public static final String DATE = "Date";
+    public static final String DAY = "Day";
+    public static final String MONTH = "Month";
+    public static final String YEAR = "Year";
+    public static final String WEEK = "Week";
     public static final String STEPCOUNT = "StepCount";
     MainActivity main;
     int steps;
@@ -48,7 +51,8 @@ public class StepsDatabase extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_NAME + " (" + ENTRY_ID + " INTEGER PRIMARY KEY" +
-                " AUTOINCREMENT, " + DATE + " TEXT," + STEPCOUNT + " INTEGER);");
+                " AUTOINCREMENT, " + DAY + " TEXT, " + MONTH + " TEXT, "
+                + YEAR + " TEXT, " + WEEK + " TEXT, "+ STEPCOUNT + " INTEGER);");
     }
 
     @Override
@@ -61,9 +65,24 @@ public class StepsDatabase extends SQLiteOpenHelper {
         //create database instance
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-ww-uu-WW", Locale.getDefault());
-        String currentDate = sdf.format(new Date());
-        contentValues.put(DATE, currentDate);
+        Date currentDate = new Date();
+        // Day
+        SimpleDateFormat sdf = new SimpleDateFormat("dd", Locale.getDefault());
+        String currentDay = sdf.format(currentDate);
+        contentValues.put(DAY, currentDay);
+        // Week
+        sdf = new SimpleDateFormat("MM", Locale.getDefault());
+        String currentMonth = sdf.format(currentDate);
+        contentValues.put(MONTH, currentMonth);
+        // Year
+        sdf = new SimpleDateFormat("yyyy", Locale.getDefault());
+        String currentYear = sdf.format(currentDate);
+        contentValues.put(YEAR, currentYear);
+        //Week
+        sdf = new SimpleDateFormat("ww", Locale.getDefault());
+        String currentWeek = sdf.format(currentDate);
+        contentValues.put(WEEK, currentWeek);
+        //Steps
         contentValues.put(STEPCOUNT, stepCount);
 
         long result = db.insert(TABLE_NAME, null, contentValues);
@@ -75,12 +94,12 @@ public class StepsDatabase extends SQLiteOpenHelper {
 
 
 
-   public boolean updateData(String date, int stepCount) {
+   public boolean updateData(String day, String month, String year, String week, int stepCount) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DATE, date);
         contentValues.put(STEPCOUNT, stepCount);
-        db.update(TABLE_NAME, contentValues, "DATE = ?",new String[] { date });
+        db.update(TABLE_NAME, contentValues, "Day = ? AND Month = ? AND Year = ? " +
+                "AND Week = ?",new String[] { day, month, year, week });
         return true;
     }
 
@@ -90,23 +109,26 @@ public class StepsDatabase extends SQLiteOpenHelper {
         return res;
     }
 
-    public Cursor getToday () {
+    public Cursor getToday (String day, String month, String year) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        Cursor res = db.rawQuery("SELECT * FROM Steps WHERE Day = ? AND Month = ? AND Year = ?",
+                new String[] { day, month, year});
         return res;
     }
 
-//    public Cursor getWeek () {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
-//        return res;
-//    }
-//
-//    public Cursor getWeek () {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
-//        return res;
-//    }
+    public Cursor getWeek (String week, String month, String year) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM Steps WHERE Week = ? AND Month = ? AND Year = ?",
+                new String[] { week, month, year});
+        return res;
+    }
+
+    public Cursor getMonth (String month, String year) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM Steps WHERE Month = ? AND Year = ?",
+                new String[] {month, year});
+        return res;
+    }
 
 
 }

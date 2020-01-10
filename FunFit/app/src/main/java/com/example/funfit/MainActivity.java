@@ -28,6 +28,7 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 @TargetApi(28)
 public class MainActivity extends Activity implements SensorEventListener {
@@ -91,7 +92,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 
 
-        setupAlarmManager(15, 58);
+        setupAlarmManager(0, 0);
 
 
         resetButton = findViewById(R.id.btnReset);
@@ -140,7 +141,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
         steps++;
         saveData();
-        addSteps();
+        //addSteps();
         stepValue.setText(String.valueOf(steps));
     }
 
@@ -176,16 +177,35 @@ public class MainActivity extends Activity implements SensorEventListener {
     }
 
     public void updateEntry() {
-        Date todaysDate = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-ww-uu-WW");
-
-        String stringDate = sdf.format(todaysDate);
-        db.updateData(stringDate, steps);
+        Date currentDate = new Date();
+        // Day
+        SimpleDateFormat sdf = new SimpleDateFormat("dd", Locale.getDefault());
+        String currentDay = sdf.format(currentDate);
+        // Week
+        sdf = new SimpleDateFormat("MM", Locale.getDefault());
+        String currentMonth = sdf.format(currentDate);
+        // Year
+        sdf = new SimpleDateFormat("yyyy", Locale.getDefault());
+        String currentYear = sdf.format(currentDate);
+        //Week
+        sdf = new SimpleDateFormat("ww", Locale.getDefault());
+        String currentWeek = sdf.format(currentDate);
+        db.updateData(currentDay, currentMonth, currentYear, currentWeek, steps);
         Toast.makeText(this, "Data updated", Toast.LENGTH_LONG).show();
     }
 
     private void viewDay() {
-        Cursor res = db.getAllData();
+        Date currentDate = new Date();
+        // Day
+        SimpleDateFormat sdf = new SimpleDateFormat("dd", Locale.getDefault());
+        String currentDay = sdf.format(currentDate);
+        // Week
+        sdf = new SimpleDateFormat("MM", Locale.getDefault());
+        String currentMonth = sdf.format(currentDate);
+        // Year
+        sdf = new SimpleDateFormat("yyyy", Locale.getDefault());
+        String currentYear = sdf.format(currentDate);
+        Cursor res = db.getToday(currentDay, currentMonth, currentYear);
         if(res.getCount() == 0) {
             showMessage("Error","Nothing found");
             return;
@@ -194,8 +214,11 @@ public class MainActivity extends Activity implements SensorEventListener {
         StringBuffer buffer = new StringBuffer();
         while (res.moveToNext()) {
             buffer.append("Id: " + res.getString(0)+ "\n");
-            buffer.append("Date: " + res.getString(1)+ "\n");
-            buffer.append("Steps: " + res.getString(2)+ "\n\n");
+            buffer.append("Day: " + res.getString(1)+ "\n");
+            buffer.append("Month: " + res.getString(2)+ "\n");
+            buffer.append("Year: " + res.getString(3)+ "\n");
+            buffer.append("Week: " + res.getString(4)+ "\n");
+            buffer.append("Steps: " + res.getString(5)+ "\n\n");
         }
 
         showMessage("Data",buffer.toString());
@@ -243,16 +266,25 @@ public class MainActivity extends Activity implements SensorEventListener {
     private boolean checkIfDayExists() {
         // gets todays date and converts it to required format and a string
         SQLiteDatabase sqldb = db.getWritableDatabase();
-        Date todaysDate = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-ww-uu-WW");
-
-        String stringDate = sdf.format(todaysDate);
-        Log.d("DEBUG================", stringDate);
+        Date currentDate = new Date();
+        // Day
+        SimpleDateFormat sdf = new SimpleDateFormat("dd", Locale.getDefault());
+        String currentDay = sdf.format(currentDate);
+        // Month
+        sdf = new SimpleDateFormat("MM", Locale.getDefault());
+        String currentMonth = sdf.format(currentDate);
+        // Year
+        sdf = new SimpleDateFormat("yyyy", Locale.getDefault());
+        String currentYear = sdf.format(currentDate);
+        //Week
+        sdf = new SimpleDateFormat("ww", Locale.getDefault());
+        String currentWeek = sdf.format(currentDate);
 
 
         //query db and look for any entries that match stringDate
-        Cursor res = sqldb.rawQuery("SELECT * FROM " + db.TABLE_NAME + " WHERE Date = ?",
-                new String[]{stringDate});
+        Cursor res = sqldb.rawQuery("SELECT * FROM " + db.TABLE_NAME + " WHERE Day = ?" +
+                        " AND Month = ? AND Year = ? AND Week = ?",
+                new String[]{currentDay, currentMonth, currentYear, currentWeek});
 
         if(res.getCount() == 0) {
             //there are no entries
