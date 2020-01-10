@@ -35,17 +35,22 @@ public class MainActivity extends Activity implements SensorEventListener {
 
     public static final String SHARED_PREFS = "funfit_prefs";
     public static final String STEPS = "steps";
+    public static final String CALORIES = "calories";
+    public static final String DISTANCE = "distance";
     public static final String CHANNEL_ID = "funfit";
 
     SensorManager sensorManager;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
-    TextView stepValue;
+    TextView stepValue, caloriesValue, distanceValue;
     Button resetButton, todayButton, weekButton, monthButton, allTimeButton, updateEntryButton;
-    int steps;
+    float steps;
+    float stepDistance = 0.7f;
+    float caloriesPerStep = 0.04f;
     StepsDatabase db;
     FunFitBroadcastReceiver broadcastReceiver = new FunFitBroadcastReceiver();
     ShutdownReceiver shutdownReceiver = new ShutdownReceiver();
+
 
     // setup reset button click listener
     private View.OnClickListener resetClickListener = new View.OnClickListener() {
@@ -58,21 +63,21 @@ public class MainActivity extends Activity implements SensorEventListener {
     private View.OnClickListener todayClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            viewDay();
+            viewDummyDataDay();
         }
     };
 
     private View.OnClickListener weekClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            viewWeek();
+            viewDummyDataWeek();
         }
     };
 
     private View.OnClickListener monthClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            viewMonth();
+            viewDummyDataMonth();
         }
     };
 
@@ -113,11 +118,13 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 
 
-        setupAlarmManager(0, 0);
+//        setupAlarmManager(0, 0);
 
 
         resetButton = findViewById(R.id.btnReset);
-        stepValue = findViewById(R.id.tv_steps);
+        stepValue = findViewById(R.id.tvStepsValue);
+        caloriesValue = findViewById(R.id.tvCaloriesValue);
+        distanceValue = findViewById(R.id.tvDistanceValue);
         todayButton = findViewById(R.id.btnDay);
         weekButton = findViewById(R.id.btnWeek);
         monthButton = findViewById(R.id.btnMonth);
@@ -143,6 +150,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         filter.addAction(Intent.ACTION_SHUTDOWN);
         registerReceiver(shutdownReceiver, filter);
 
+        addDummyData();
     }
 
     @Override
@@ -167,9 +175,13 @@ public class MainActivity extends Activity implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
         steps++;
-        saveData();
+        float calories = calculateCalories();
+        float distance = calculateDistance();
+        saveData(calories, distance);
         //addSteps();
         stepValue.setText(String.valueOf(steps));
+        caloriesValue.setText(String.valueOf(calories));
+        distanceValue.setText(String.valueOf(distance));
     }
 
     @Override
@@ -178,15 +190,17 @@ public class MainActivity extends Activity implements SensorEventListener {
     }
 
     // saves user data in shared preferences
-    public void saveData() {
+    public void saveData(float caloriesValue, float distanceValue) {
         editor = sharedPreferences.edit();
-        editor.putInt(STEPS, steps);
+        editor.putFloat(STEPS, steps);
+        editor.putFloat(CALORIES, caloriesValue);
+        editor.putFloat(DISTANCE, distanceValue);
         editor.apply();
     }
 
     // loads user data from shared preferences
     public void loadData() {
-        steps = sharedPreferences.getInt(STEPS, 0);
+        steps = sharedPreferences.getFloat(STEPS, 0);
     }
 
     // resets steps and applies to text view
@@ -332,6 +346,71 @@ public class MainActivity extends Activity implements SensorEventListener {
         showMessage("Data",buffer.toString());
     }
 
+    private void viewDummyDataDay() {
+
+        Cursor res = db.getToday("01", "04", "2019");
+        if(res.getCount() == 0) {
+            showMessage("Error","Nothing found");
+            return;
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        while (res.moveToNext()) {
+            buffer.append("Id: " + res.getString(0)+ "\n");
+            buffer.append("Day: " + res.getString(1)+ "\n");
+            buffer.append("Month: " + res.getString(2)+ "\n");
+            buffer.append("Year: " + res.getString(3)+ "\n");
+            buffer.append("Week: " + res.getString(4)+ "\n");
+            buffer.append("Steps: " + res.getString(5)+ "\n\n");
+        }
+
+        showMessage("Data",buffer.toString());
+    }
+
+    private void viewDummyDataWeek() {
+
+        Cursor res = db.getWeek("09", "04", "2019");
+        if(res.getCount() == 0) {
+            showMessage("Error","Nothing found");
+            return;
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        while (res.moveToNext()) {
+            buffer.append("Id: " + res.getString(0)+ "\n");
+            buffer.append("Day: " + res.getString(1)+ "\n");
+            buffer.append("Month: " + res.getString(2)+ "\n");
+            buffer.append("Year: " + res.getString(3)+ "\n");
+            buffer.append("Week: " + res.getString(4)+ "\n");
+            buffer.append("Steps: " + res.getString(5)+ "\n\n");
+        }
+
+        showMessage("Data",buffer.toString());
+    }
+
+    private void viewDummyDataMonth() {
+
+        Cursor res = db.getMonth( "01", "1992");
+        if(res.getCount() == 0) {
+            showMessage("Error","Nothing found");
+            return;
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        while (res.moveToNext()) {
+            buffer.append("Id: " + res.getString(0)+ "\n");
+            buffer.append("Day: " + res.getString(1)+ "\n");
+            buffer.append("Month: " + res.getString(2)+ "\n");
+            buffer.append("Year: " + res.getString(3)+ "\n");
+            buffer.append("Week: " + res.getString(4)+ "\n");
+            buffer.append("Steps: " + res.getString(5)+ "\n\n");
+        }
+
+        showMessage("Data",buffer.toString());
+    }
+
+
+
     public void showMessage(String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
@@ -353,7 +432,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
     }
 
-    public int getSteps() {
+    public float getSteps() {
         return steps;
     }
 
@@ -401,5 +480,29 @@ public class MainActivity extends Activity implements SensorEventListener {
         else {
             return true;
         }
+    }
+
+    private void addDummyData() {
+        db.insertDataSpecific("28", "09", "12", "2019", 100);
+        db.insertDataSpecific("29", "09", "12", "2019", 100);
+        db.insertDataSpecific("01", "09", "12", "2019", 100);
+        db.insertDataSpecific("25", "09", "04", "2019", 100);
+        db.insertDataSpecific("01", "09", "04", "2019", 100);
+        db.insertDataSpecific("30", "09", "04", "2019", 100);
+        db.insertDataSpecific("01", "20", "01", "1992", 100);
+        db.insertDataSpecific("02", "20", "01", "1992", 100);
+        db.insertDataSpecific("03", "20", "01", "1992", 100);
+    }
+
+    private float calculateCalories(){
+        // 0.04 calories per step
+        float calories = steps * caloriesPerStep;
+        return calories;
+    }
+
+    private float calculateDistance() {
+        // 0.7m per step
+        float distance = steps * stepDistance;
+        return distance;
     }
 }

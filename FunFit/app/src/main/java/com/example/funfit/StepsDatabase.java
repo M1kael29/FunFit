@@ -61,7 +61,18 @@ public class StepsDatabase extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertData(int stepCount) {
+    public void insertDataSpecific(String day, String week, String month, String year, int steps) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DAY, day);
+        contentValues.put(WEEK, week);
+        contentValues.put(MONTH, month);
+        contentValues.put(YEAR, year);
+        contentValues.put(STEPCOUNT, steps);
+        db.insert(TABLE_NAME, null, contentValues);
+    }
+
+    public boolean insertData(float stepCount) {
         //create database instance
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -94,7 +105,7 @@ public class StepsDatabase extends SQLiteOpenHelper {
 
 
 
-   public boolean updateData(String day, String month, String year, String week, int stepCount) {
+   public boolean updateData(String day, String month, String year, String week, float stepCount) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(STEPCOUNT, stepCount);
