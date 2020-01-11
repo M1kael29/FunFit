@@ -13,7 +13,7 @@ public class ShutdownReceiver  extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         db = new StepsDatabase(context);
-        db.insertData(99);
+        db.insertData();
         Log.d("DEBUG================", "SHUTTING DOWN!!!!!!!!!!!!");
     }
 }

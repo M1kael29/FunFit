@@ -49,7 +49,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     float caloriesPerStep = 0.04f;
     StepsDatabase db;
     FunFitBroadcastReceiver broadcastReceiver = new FunFitBroadcastReceiver();
-    ShutdownReceiver shutdownReceiver = new ShutdownReceiver();
+    //ShutdownReceiver shutdownReceiver = new ShutdownReceiver();
 
 
     // setup reset button click listener
@@ -63,21 +63,21 @@ public class MainActivity extends Activity implements SensorEventListener {
     private View.OnClickListener todayClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            viewDummyDataDay();
+            viewDay();
         }
     };
 
     private View.OnClickListener weekClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            viewDummyDataWeek();
+            viewWeek();
         }
     };
 
     private View.OnClickListener monthClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            viewDummyDataMonth();
+            viewMonth();
         }
     };
 
@@ -118,7 +118,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 
 
-//        setupAlarmManager(0, 0);
+        setupAlarmManager(0, 0);
 
 
         resetButton = findViewById(R.id.btnReset);
@@ -148,9 +148,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SHUTDOWN);
-        registerReceiver(shutdownReceiver, filter);
+        //registerReceiver(shutdownReceiver, filter);
 
-        addDummyData();
+        //addDummyData();
     }
 
     @Override
@@ -209,31 +209,31 @@ public class MainActivity extends Activity implements SensorEventListener {
         stepValue.setText(String.valueOf(steps));
     }
 
-    private void addEntry() {
-        boolean isInserted = db.insertData(steps);
-        if(isInserted)
-            Toast.makeText(this, "Data inserted", Toast.LENGTH_LONG).show();
-        else
-            Toast.makeText(this, "Data not inserted", Toast.LENGTH_LONG).show();
-    }
-
-    public void updateEntry() {
-        Date currentDate = new Date();
-        // Day
-        SimpleDateFormat sdf = new SimpleDateFormat("dd", Locale.getDefault());
-        String currentDay = sdf.format(currentDate);
-        // Week
-        sdf = new SimpleDateFormat("MM", Locale.getDefault());
-        String currentMonth = sdf.format(currentDate);
-        // Year
-        sdf = new SimpleDateFormat("yyyy", Locale.getDefault());
-        String currentYear = sdf.format(currentDate);
-        //Week
-        sdf = new SimpleDateFormat("ww", Locale.getDefault());
-        String currentWeek = sdf.format(currentDate);
-        db.updateData(currentDay, currentMonth, currentYear, currentWeek, steps);
-        Toast.makeText(this, "Data updated", Toast.LENGTH_LONG).show();
-    }
+//    public void addEntry() {
+//        boolean isInserted = db.insertData(steps);
+//        if(isInserted)
+//            Toast.makeText(this, "Data inserted", Toast.LENGTH_LONG).show();
+//        else
+//            Toast.makeText(this, "Data not inserted", Toast.LENGTH_LONG).show();
+//    }
+//
+//    public void updateEntry() {
+//        Date currentDate = new Date();
+//        // Day
+//        SimpleDateFormat sdf = new SimpleDateFormat("dd", Locale.getDefault());
+//        String currentDay = sdf.format(currentDate);
+//        // Week
+//        sdf = new SimpleDateFormat("MM", Locale.getDefault());
+//        String currentMonth = sdf.format(currentDate);
+//        // Year
+//        sdf = new SimpleDateFormat("yyyy", Locale.getDefault());
+//        String currentYear = sdf.format(currentDate);
+//        //Week
+//        sdf = new SimpleDateFormat("ww", Locale.getDefault());
+//        String currentWeek = sdf.format(currentDate);
+//        db.updateData(currentDay, currentMonth, currentYear, currentWeek, steps);
+//        Toast.makeText(this, "Data updated", Toast.LENGTH_LONG).show();
+//    }
 
 
 
@@ -442,15 +442,15 @@ public class MainActivity extends Activity implements SensorEventListener {
         Log.d("DEBUG================", "got here");
         if(checkIfDayExists()) {
             Log.d("DEBUG================", "true");
-            updateEntry();
+            db.updateData();
         }
         else {
             Log.d("DEBUG================", "false");
-            addEntry();
+            db.insertData();
         }
     }
 
-    private boolean checkIfDayExists() {
+    public boolean checkIfDayExists() {
         // gets todays date and converts it to required format and a string
         SQLiteDatabase sqldb = db.getWritableDatabase();
         Date currentDate = new Date();

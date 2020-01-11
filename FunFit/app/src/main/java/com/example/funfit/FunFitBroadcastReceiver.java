@@ -19,19 +19,19 @@ public class FunFitBroadcastReceiver extends BroadcastReceiver {
 
         SharedPreferences prefs = context.getSharedPreferences(main.SHARED_PREFS, context.MODE_PRIVATE);
 
-        if(Intent.ACTION_SHUTDOWN.equals(intent.getAction())) {
-            db = new StepsDatabase(main);
-            db.insertData(99);
-        }
 
         if(Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
 
             Toast.makeText(context, "BOOT COMPLETED", Toast.LENGTH_SHORT).show();
         }
 
-        Toast.makeText(context, "RING RING", Toast.LENGTH_SHORT).show();
         db = new StepsDatabase(context);
-        db.insertData(prefs.getInt(main.STEPS, 0));
+
+        db.addData();
+
+        Toast.makeText(context, "RING RING", Toast.LENGTH_SHORT).show();
+
+
 
     }
 }
