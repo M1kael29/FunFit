@@ -28,10 +28,7 @@ import java.util.logging.Logger;
 
 public class StepsDatabase extends SQLiteOpenHelper {
 
-
-
-
-
+    Context thisContext;
 
     public static final String DATABASE_NAME = "FunFit";
     public static final String TABLE_NAME = "Steps";
@@ -46,12 +43,11 @@ public class StepsDatabase extends SQLiteOpenHelper {
     SharedPreferences sharedPreferences;
 
 
-
     public StepsDatabase(@Nullable Context context) {
         super(context, DATABASE_NAME, null, 1);
 
         sharedPreferences = context.getSharedPreferences(main.SHARED_PREFS, context.MODE_PRIVATE);
-
+        thisContext = context;
     }
 
     @Override
@@ -80,16 +76,16 @@ public class StepsDatabase extends SQLiteOpenHelper {
     }
 
     public void addData() {
-        Log.d("DEBUG================", "got here");
-
-        if(checkIfDayExists()) {
-            Log.d("DEBUG================", "true");
-            updateData();
-        }
-        else {
-            Log.d("DEBUG================", "false");
+//        Log.d("DEBUG================", "got here");
+//
+//        if(checkIfDayExists()) {
+//            Log.d("DEBUG================", "true");
+//            updateData();
+//        }
+//        else {
+//            Log.d("DEBUG================", "false");
             insertData();
-        }
+        //}
     }
 
     private boolean checkIfDayExists() {
@@ -152,6 +148,7 @@ public class StepsDatabase extends SQLiteOpenHelper {
         contentValues.put(STEPCOUNT, stepCount);
 
         long result = db.insert(TABLE_NAME, null, contentValues);
+        Log.d("DEBUG================", "insertData called");
         if(result == -1)
             return false;
         else
@@ -181,6 +178,7 @@ public class StepsDatabase extends SQLiteOpenHelper {
         contentValues.put(STEPCOUNT, steps);
         db.update(TABLE_NAME, contentValues, "Day = ? AND Month = ? AND Year = ? " +
                 "AND Week = ?",new String[] { day, month, year, week });
+        Log.d("DEBUG================", "Number of steps added to db:" + steps);
         return true;
     }
 

@@ -1,6 +1,7 @@
 package com.example.funfit;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -12,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
@@ -48,8 +50,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     float stepDistance = 0.7f;
     float caloriesPerStep = 0.04f;
     StepsDatabase db;
-    FunFitBroadcastReceiver broadcastReceiver = new FunFitBroadcastReceiver();
-    //ShutdownReceiver shutdownReceiver = new ShutdownReceiver();
+
 
 
     // setup reset button click listener
@@ -101,24 +102,28 @@ public class MainActivity extends Activity implements SensorEventListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // request user permission to use activity sensor
+        ActivityCompat.requestPermissions(this, new String[]
+                {Manifest.permission.ACTIVITY_RECOGNITION, Manifest.permission.
+                        FOREGROUND_SERVICE}, 1);
+
         db = new StepsDatabase(this);
 
-//        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.
-//                        FOREGROUND_SERVICE},
-//                2);
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.FOREGROUND_SERVICE)
-//                == PackageManager.PERMISSION_GRANTED) {
-//            this.startForegroundService(new Intent(getApplicationContext(), StepCounterService.
-//                    class));
-//            Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
-//        }
-//        else {
-//            Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
-//        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.FOREGROUND_SERVICE)
+                == PackageManager.PERMISSION_GRANTED) {
+            this.startForegroundService(new Intent(getApplicationContext(), StepCounterService.
+                    class));
+            Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
+        }
 
 
 
-        setupAlarmManager(0, 0);
+        saveStepToDb(00, 13, 00);
+        resetStepToZero(00, 13, 30);
 
 
         resetButton = findViewById(R.id.btnReset);
@@ -141,9 +146,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
 
-        // request user permission to use activity sensor
-        ActivityCompat.requestPermissions(this, new String[]
-                {Manifest.permission.ACTIVITY_RECOGNITION}, 1);
+
 
 
         IntentFilter filter = new IntentFilter();
@@ -174,11 +177,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        steps++;
+        loadData();
         float calories = calculateCalories();
         float distance = calculateDistance();
-        saveData(calories, distance);
-        //addSteps();
         stepValue.setText(String.valueOf(steps));
         caloriesValue.setText(String.valueOf(calories));
         distanceValue.setText(String.valueOf(distance));
@@ -421,15 +422,28 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 
 
-    private void setupAlarmManager(int hour, int minute) {
+    private void saveStepToDb(int hour, int minute, int second) {
         Calendar c = Calendar.getInstance();
         c.set(Calendar.HOUR_OF_DAY, hour);
         c.set(Calendar.MINUTE, minute);
-        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.SECOND, second);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, FunFitBroadcastReceiver.class);
+        Intent intent = new Intent(this, AddStepsToDbReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 3, intent, 0);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+        Log.d("DEBUG================", "saveStepToDb done");
+    }
+
+    private void resetStepToZero(int hour, int minute, int second) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, hour);
+        c.set(Calendar.MINUTE, minute);
+        c.set(Calendar.SECOND, second);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, ResetStepsReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 4, intent, 0);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+        Log.d("DEBUG================", "resetStepToZero done");
     }
 
     public float getSteps() {
@@ -502,7 +516,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
     private float calculateDistance() {
         // 0.7m per step
-        float distance = steps * stepDistance;
+        float distance = (steps * stepDistance)/1000;
         return distance;
     }
 }

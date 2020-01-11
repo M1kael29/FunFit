@@ -13,6 +13,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
@@ -21,9 +22,11 @@ import static com.example.funfit.MainActivity.CHANNEL_ID;
 
 public class StepCounterService extends Service implements SensorEventListener {
 
-    private static int steps;
+    private static float steps;
     public static final String SHARED_PREFS = "funfit_prefs";
     public static final String STEPS = "steps";
+
+
 
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
@@ -33,6 +36,7 @@ public class StepCounterService extends Service implements SensorEventListener {
     public void onCreate() {
         super.onCreate();
         Toast.makeText(this, "service oncreate called", Toast.LENGTH_SHORT).show();
+
 
 
 
@@ -54,7 +58,7 @@ public class StepCounterService extends Service implements SensorEventListener {
         NotificationManager manager = getSystemService(NotificationManager.class);
         manager.createNotificationChannel(channel);
 
-        db = new StepsDatabase(this);
+        //db = new StepsDatabase(this);
 
         Toast.makeText(this, "DONE", Toast.LENGTH_SHORT).show();
 
@@ -79,9 +83,7 @@ public class StepCounterService extends Service implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        steps = (int) event.values[0];
-        //db.createStepsEntry();
-
+        steps++;
         saveData();
     }
 
@@ -98,11 +100,11 @@ public class StepCounterService extends Service implements SensorEventListener {
     // saves user data in shared preferences
     public void saveData() {
 
-        Toast.makeText(this, "save data called", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "save data called", Toast.LENGTH_SHORT).show();
         sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
-        //editor.putInt(STEPS, db.getStepsToday());
+        editor.putFloat(STEPS, steps);
 
         editor.apply();
     }
@@ -111,5 +113,11 @@ public class StepCounterService extends Service implements SensorEventListener {
     public void onDestroy() {
         super.onDestroy();
         Toast.makeText(this, "service ondestroy called", Toast.LENGTH_SHORT).show();
+    }
+
+    public static void resetStepCounter() {
+        steps = 0;
+        Log.d("DEBUG================", "resetStepCounter called");
+
     }
 }

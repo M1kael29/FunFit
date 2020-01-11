@@ -14,6 +14,7 @@ public class FunFitBroadcastReceiver extends BroadcastReceiver {
     StepsDatabase db;
     MainActivity main;
 
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -25,13 +26,14 @@ public class FunFitBroadcastReceiver extends BroadcastReceiver {
             Toast.makeText(context, "BOOT COMPLETED", Toast.LENGTH_SHORT).show();
         }
 
+
         db = new StepsDatabase(context);
 
         db.addData();
 
         Toast.makeText(context, "RING RING", Toast.LENGTH_SHORT).show();
 
-
+        StepCounterService.resetStepCounter();
 
     }
 }
