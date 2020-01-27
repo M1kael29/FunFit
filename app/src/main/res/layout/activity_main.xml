@@ -30,6 +30,19 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="264dp"
+                android:layout_marginStart="100dp"
+                android:text="Steps"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.094"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
                 android:id="@+id/tvStepsValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
