@@ -18,7 +18,8 @@
         android:restoreAnyVersion="true">
         <meta-data android:name="com.google.android.backup.api_key"
             android:value="AEdPqrEAAAAIrxwDQw3R5gdYvN4ilG14i35ViQVxXT4MfOgQzg" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

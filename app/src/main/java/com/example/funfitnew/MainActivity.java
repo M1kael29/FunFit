@@ -19,18 +19,26 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -38,6 +46,31 @@ import java.util.Locale;
 
 @TargetApi(28)
 public class MainActivity extends Activity implements SensorEventListener {
+
+    public static final int RESULT_LOAD_IMAGE = 3;
+
+    RelativeLayout rellay1, rellay2, rellay3, testBg;
+    Handler handler = new Handler();
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            rellay1.setVisibility(View.VISIBLE);
+        }
+    };
+
+    TextView Welcome;
+    Handler handler2 = new Handler();
+    Runnable runnable2 = new Runnable() {
+        @Override
+        public void run() {
+            testBg.setVisibility(View.VISIBLE);
+            rellay2.setVisibility(View.VISIBLE);
+            rellay3.setVisibility(View.VISIBLE);
+            Welcome.setVisibility(View.INVISIBLE);
+        }
+    };
+
+
 
     public static final String SHARED_PREFS = "funfit_prefs";
     public static final String STEPS_TODAY = "steps";
@@ -105,6 +138,17 @@ public class MainActivity extends Activity implements SensorEventListener {
         }
     };
 
+
+    private View.OnClickListener profileSelect = new View.OnClickListener() {
+        @Override
+        public void onClick(View arg0) {
+            Intent i = new Intent(
+                    Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+            startActivityForResult(i, RESULT_LOAD_IMAGE);
+        }
+    };
+
     ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceDisconnected(ComponentName name) {
@@ -140,11 +184,20 @@ public class MainActivity extends Activity implements SensorEventListener {
 
 
 
+        rellay1 = (RelativeLayout) findViewById(R.id.rellay1);
+        rellay2 = (RelativeLayout) findViewById(R.id.rellay2);
+        rellay3 = (RelativeLayout) findViewById(R.id.rellay3);
+        Welcome = (TextView) findViewById(R.id.Welcome);
+        testBg = (RelativeLayout) findViewById(R.id.testBg);
 
 
+        handler.postDelayed(runnable, 2000);
+        handler2.postDelayed(runnable2, 4000);
 
 
+        ImageButton profilePic = (ImageButton) findViewById(R.id.imgView_logo);
 
+        profilePic.setOnClickListener(profileSelect);
 
         saveStepToDb(23, 59, 59);
         //resetStepToZero(00, 00, 10);
@@ -171,21 +224,31 @@ public class MainActivity extends Activity implements SensorEventListener {
         sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
 
 
-        refreshLayout = findViewById(R.id.refreshLayout);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                //stepCounterService.refreshSteps();
-                currentDaySteps = sharedPreferences.getFloat(STEPS_TODAY,0);
-                updateScreen();
-                refreshLayout.setRefreshing(false);
-            }
-        });
-
-
 
         //addDummyData();
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+            Bitmap bitmaptest = null;
+            try {
+                bitmaptest = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+            }catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();}
+
+            ImageButton btn = (ImageButton) findViewById(R.id.imgView_logo);
+            btn.setImageBitmap(bitmaptest);
+
+        }}
 
     @Override
     protected void onStart() {
