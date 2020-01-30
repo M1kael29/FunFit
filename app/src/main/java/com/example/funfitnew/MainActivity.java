@@ -106,28 +106,28 @@ public class MainActivity extends Activity implements SensorEventListener {
     private View.OnClickListener todayClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            viewDay();
+            moveToStepPage();
         }
     };
 
     private View.OnClickListener weekClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            viewWeek();
+            moveToCaloriePage();
         }
     };
 
     private View.OnClickListener monthClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            viewMonth();
+            moveToDistance();
         }
     };
 
     private View.OnClickListener allTimeClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            viewAllTime();
+            moveToAchievements();
         }
     };
 
@@ -669,6 +669,31 @@ public class MainActivity extends Activity implements SensorEventListener {
         stepCounterService.rebootSetup();
         Log.d("DEBUG================", "saveDataBeforeShutdown called");
     }
+
+    private void moveToStepPage(){
+
+        Intent moveToSteps = new Intent(MainActivity.this, stepPage.class);
+        startActivity(moveToSteps);
+    }
+
+    private void moveToCaloriePage(){
+
+        Intent moveToCalories = new Intent(MainActivity.this, caloriesPage.class);
+        startActivity(moveToCalories);
+    }
+
+    private void moveToAchievements(){
+
+        Intent moveToAchievements = new Intent(MainActivity.this, achievementsPage.class);
+        startActivity(moveToAchievements);
+    }
+
+    private void moveToDistance(){
+
+        Intent moveToDistance = new Intent(MainActivity.this, distancePage.class);
+        startActivity(moveToDistance);
+    }
+
 
 //    public void setupStepsFromReboot() {
 //        stepCounterService.rebootSetup();

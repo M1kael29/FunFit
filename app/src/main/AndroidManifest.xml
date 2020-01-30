@@ -3,39 +3,52 @@
     package="com.example.funfitnew">
 
     <uses-feature android:name="android.hardware.sensor.stepcounter" />
+
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
+        android:backupAgent=".FunFitBackupAgent"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:restoreAnyVersion="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:backupAgent=".FunFitBackupAgent"
-        android:restoreAnyVersion="true">
-        <meta-data android:name="com.google.android.backup.api_key"
+        android:theme="@style/AppTheme">
+        <activity android:name=".distancePage"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".achievementsPage"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".caloriesPage"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".stepPage"
+            android:screenOrientation="portrait"/>
+
+        <meta-data
+            android:name="com.google.android.backup.api_key"
             android:value="AEdPqrEAAAAIrxwDQw3R5gdYvN4ilG14i35ViQVxXT4MfOgQzg" />
-        <activity android:name=".MainActivity"
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
+        <activity
+            android:name=".MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-<!--        <receiver android:name=".FunFitBroadcastReceiver">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.BOOT_COMPLETED"></action>-->
-<!--            </intent-filter>-->
-<!--        </receiver>-->
-        <receiver android:name=".AddStepsToDbReceiver"></receiver>
+        </activity> <!-- <receiver android:name=".FunFitBroadcastReceiver"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.BOOT_COMPLETED"></action> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
+        <receiver android:name=".AddStepsToDbReceiver" />
 
-        <service
-            android:name=".StepCounterService"/>
-
+        <service android:name=".StepCounterService" />
     </application>
 
 </manifest>

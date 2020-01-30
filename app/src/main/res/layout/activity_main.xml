@@ -104,7 +104,8 @@
                             android:layout_height="match_parent"
                             android:text="Today's Steps"
                             android:textAlignment="center"
-                            android:textSize="18dp"/>
+                            android:textSize="18dp"
+                            android:fontFamily="sans-serif-medium"/>
 
 
                     </LinearLayout>
@@ -117,7 +118,8 @@
                         android:orientation="horizontal"
                         android:paddingTop="110dp"
                         android:text="0"
-                        android:textSize="18dp" />
+                        android:textSize="18dp"
+                        android:fontFamily="sans-serif-medium"/>
 
 
                     <LinearLayout
@@ -154,7 +156,7 @@
                         android:max="6000"
                         android:paddingLeft="38dp"
                         android:paddingTop="10dp"
-                        android:progress="1000"
+                        android:progress="6015"
                         android:progressDrawable="@drawable/progresscircle"
                         android:textAlignment="center">
 
@@ -185,7 +187,8 @@
                             android:layout_height="match_parent"
                             android:text="Today's Distance"
                             android:textAlignment="center"
-                            android:textSize="18dp" />
+                            android:textSize="18dp"
+                            android:fontFamily="sans-serif-medium"/>
 
                     </LinearLayout>
 
@@ -224,17 +227,18 @@
                         android:orientation="horizontal"
                         android:paddingTop="110dp"
                         android:text="0"
-                        android:textSize="18dp" />
+                        android:textSize="18dp"
+                        android:fontFamily="sans-serif-medium"/>
 
                     <ProgressBar
                         android:id="@+id/distanceProgressBar"
                         style="?android:progressBarStyleHorizontal"
                         android:layout_width="143dp"
                         android:layout_height="135dp"
-                        android:max="5"
+                        android:max="5000"
                         android:paddingLeft="38dp"
                         android:paddingTop="12dp"
-                        android:progress="1"
+                        android:progress="4200"
                         android:progressDrawable="@drawable/progresscircle"
                         android:textAlignment="center">
 
@@ -263,7 +267,8 @@
                             android:layout_height="match_parent"
                             android:text="Today's Calories"
                             android:textAlignment="center"
-                            android:textSize="18dp" />
+                            android:textSize="18dp"
+                            android:fontFamily="sans-serif-medium"/>
 
                     </LinearLayout>
 
@@ -302,17 +307,18 @@
                         android:orientation="horizontal"
                         android:paddingTop="110dp"
                         android:text="0"
-                        android:textSize="18dp" />
+                        android:textSize="18dp"
+                        android:fontFamily="sans-serif-medium"/>
 
                     <ProgressBar
                         android:id="@+id/CaloriesProgressBar"
                         style="?android:progressBarStyleHorizontal"
                         android:layout_width="143dp"
                         android:layout_height="135dp"
-                        android:max="5"
+                        android:max="300"
                         android:paddingLeft="38dp"
                         android:paddingTop="12dp"
-                        android:progress="1"
+                        android:progress="240"
                         android:progressDrawable="@drawable/progresscircle"
                         android:textAlignment="center">
 
@@ -340,7 +346,8 @@
                             android:layout_height="match_parent"
                             android:text="Achievements"
                             android:textAlignment="center"
-                            android:textSize="18dp" />
+                            android:textSize="18dp"
+                            android:fontFamily="sans-serif-medium"/>
 
                     </LinearLayout>
 
@@ -391,7 +398,7 @@
                 //TODAYS DISTANCE BUTTON
 
                 <Button
-                    android:id="@+id/btnWeek"
+                    android:id="@+id/btnMonth"
                     android:layout_width="160dp"
                     android:layout_height="140dp"
                     android:layout_alignParentRight="true"
@@ -401,19 +408,21 @@
                 //TODAYS CALORIES BUTTON
 
                 <Button
-                    android:id="@+id/btnMonth"
+                    android:id="@+id/btnWeek"
                     android:layout_width="160dp"
                     android:layout_height="140dp"
-                    android:layout_marginTop="360dp"
+                    android:layout_marginTop="380dp"
                     android:background="@color/transparent" />
+
+                //ACHIEVEMENTS BUTTON
 
                 <Button
                     android:id="@+id/btnAllTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="160dp"
+                    android:layout_height="140dp"
+                    android:layout_marginTop="380dp"
                     android:layout_alignParentRight="true"
-                    android:layout_marginTop="90dp"
-                    android:text="All Time" />
+                    android:background="@color/transparent"/>
 
 
             </RelativeLayout>

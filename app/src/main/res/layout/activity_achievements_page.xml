@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".achievementsPage"
+    android:background="@drawable/colour"
+    android:animateLayoutChanges="true"
+    android:fitsSystemWindows="true"
+    android:id="@+id/achievementsPage">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/achievementicon"
+                android:paddingTop="15dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="sans-serif-medium"
+                android:paddingTop="35dp"
+                android:paddingStart="75dp"
+                android:text="Your Achievements"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="32dp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/achieve1"
+                android:layout_width="120dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="200dp"
+                app:cardCornerRadius="23dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Today's Goal"
+                        android:textAlignment="center"
+                        android:textSize="16dp"
+                        android:fontFamily="sans-serif-medium"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="15dp"
+                    android:paddingStart="33dp">
+
+                    <ImageView
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:src="@drawable/shoe" />
+
+                </LinearLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="10dp">
+
+
+                    <ProgressBar
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"
+                        android:layout_alignParentBottom="true"
+                        style="?android:progressBarStyleHorizontal"
+                        android:max="5000"
+                        android:progress="500"
+                        android:progressDrawable="@drawable/secondaryprogressline">
+
+                    </ProgressBar>
+
+                    <ProgressBar
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"
+                        android:layout_alignParentBottom="true"
+                        style="?android:progressBarStyleHorizontal"
+                        android:max="5"
+                        android:progress="5"
+                        android:progressDrawable="@drawable/progressline">
+
+                    </ProgressBar>
+
+
+                </RelativeLayout>
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingTop="50dp"
+                    android:text="5762/5000"
+                    android:textSize="16dp"
+                    android:fontFamily="sans-serif-medium"/>
+
+            </androidx.cardview.widget.CardView>
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/achieve2"
+                android:layout_width="120dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="200dp"
+                android:layout_marginLeft="125dp"
+                app:cardCornerRadius="23dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Weekly Goal"
+                        android:textAlignment="center"
+                        android:textSize="16dp"
+                        android:fontFamily="sans-serif-medium"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="15dp"
+                    android:paddingStart="33dp">
+
+                    <ImageView
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:src="@drawable/shoe" />
+
+                </LinearLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="10dp">
+
+
+                    <ProgressBar
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"
+                        android:layout_alignParentBottom="true"
+                        style="?android:progressBarStyleHorizontal"
+                        android:max="7"
+                        android:progress="7"
+                        android:progressDrawable="@drawable/secondaryprogressline">
+
+                    </ProgressBar>
+
+                    <ProgressBar
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"
+                        android:layout_alignParentBottom="true"
+                        style="?android:progressBarStyleHorizontal"
+                        android:max="7"
+                        android:progress="7"
+                        android:progressDrawable="@drawable/progressline">
+
+                    </ProgressBar>
+
+
+                </RelativeLayout>
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingTop="50dp"
+                    android:text="7/7"
+                    android:textSize="16dp"
+                    android:fontFamily="sans-serif-medium"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/achieve3"
+                android:layout_width="120dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="200dp"
+                android:layout_alignParentRight="true"
+                app:cardCornerRadius="23dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Monthly Goal"
+                        android:textAlignment="center"
+                        android:textSize="16dp"
+                        android:fontFamily="sans-serif-medium"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="15dp"
+                    android:paddingStart="33dp">
+
+                    <ImageView
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:src="@drawable/shoe" />
+
+                </LinearLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="10dp">
+
+
+                    <ProgressBar
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"
+                        android:layout_alignParentBottom="true"
+                        style="?android:progressBarStyleHorizontal"
+                        android:max="30"
+                        android:progress="20"
+                        android:progressDrawable="@drawable/secondaryprogressline">
+
+                    </ProgressBar>
+
+                    <ProgressBar
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"
+                        android:layout_alignParentBottom="true"
+                        style="?android:progressBarStyleHorizontal"
+                        android:max="30"
+                        android:progress="30"
+                        android:progressDrawable="@drawable/progressline">
+
+                    </ProgressBar>
+
+
+                </RelativeLayout>
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingTop="50dp"
+                    android:text="30/30"
+                    android:textSize="16dp"
+                    android:fontFamily="sans-serif-medium"/>
+
+            </androidx.cardview.widget.CardView>
+
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+</androidx.drawerlayout.widget.DrawerLayout>
