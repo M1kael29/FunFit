@@ -33,6 +33,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -84,6 +85,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     SharedPreferences.Editor editor;
     TextView stepValue, caloriesValue, distanceValue;
     Button resetButton, todayButton, weekButton, monthButton, allTimeButton, updateEntryButton;
+    ProgressBar stepProgressBar;
     float currentDaySteps;
     float stepDistance = 0.7f;
     float caloriesPerStep = 0.04f;
@@ -212,6 +214,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         monthButton = findViewById(R.id.btnMonth);
         allTimeButton = findViewById(R.id.btnAllTime);
         updateEntryButton = findViewById(R.id.btnUpdateEntry);
+        stepProgressBar = findViewById(R.id.stepProgressBar);
 
         resetButton.setOnClickListener(resetClickListener);
         todayButton.setOnClickListener(todayClickListener);
@@ -318,6 +321,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         stepValue.setText(strSteps);
         caloriesValue.setText(strCalories);
         distanceValue.setText(strDistance);
+        stepProgressBar.setProgress((int) currentDaySteps);
     }
 
     @Override

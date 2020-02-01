@@ -135,6 +135,8 @@
 
                     </LinearLayout>
 
+
+
                     <ProgressBar
                         style="?android:progressBarStyleHorizontal"
                         android:layout_width="143dp"
@@ -153,10 +155,10 @@
                         style="?android:progressBarStyleHorizontal"
                         android:layout_width="143dp"
                         android:layout_height="135dp"
-                        android:max="6000"
+                        android:max="5000"
                         android:paddingLeft="38dp"
                         android:paddingTop="10dp"
-                        android:progress="6015"
+                        android:progress="0"
                         android:progressDrawable="@drawable/progresscircle"
                         android:textAlignment="center">
 

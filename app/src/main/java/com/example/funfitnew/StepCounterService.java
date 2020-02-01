@@ -195,8 +195,8 @@ public class StepCounterService extends Service implements SensorEventListener {
         //      if(stepsInRow = 7)
                     // update display nodes
                     // congrats message
-                    // (at end of day reset this and reset node display)
-        // }
+        //                    // (at end of day reset this and reset node display)
+        //        // }
     }
 
     private void highestSteps() {
