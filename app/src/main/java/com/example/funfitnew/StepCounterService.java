@@ -20,8 +20,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 
+import static com.example.funfitnew.App.ACHIEVEMENTS_CHANNEL;
 import static com.example.funfitnew.MainActivity.CHANNEL_ID;
 
 
@@ -34,6 +36,11 @@ public class StepCounterService extends Service implements SensorEventListener {
     public static final String STEPS_TOTAL = "stepsTotal";
     public static final String RESET_FLAG = "resetFlag";
     public static final String STEPS_START_OF_DAY = "stepsAtStartOfDay";
+    public static final String DAILY_STEPS_BOOL = "dailyStepsBool";
+    public static final String WEEKLY_STEPS_BOOL = "weeklyStepsBool";
+    public static final String HIGHEST_STEPS_BOOL = "highestStepsBool";
+    public static final String FIVE_KM_BOOL = "fiveKmBool";
+    public static final String STEPS_IN_ROW = "stepInRow";
     private static float stepsAtLastSave;
     private static final int STEPS_OFFSET = 10;
     private static float totalSteps;
@@ -42,6 +49,7 @@ public class StepCounterService extends Service implements SensorEventListener {
     private float nextSteps;
     private boolean getInitialSteps;
     private float stepDiff;
+    private NotificationManagerCompat newNotificationManager;
 
 
 
@@ -75,6 +83,8 @@ public class StepCounterService extends Service implements SensorEventListener {
         loadData();
         getInitialSteps = true;
 
+        newNotificationManager = NotificationManagerCompat.from(this);
+
         NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "FunFit Channel",
                 NotificationManager.IMPORTANCE_DEFAULT);
 
@@ -96,6 +106,16 @@ public class StepCounterService extends Service implements SensorEventListener {
 
 
         sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+        editor.putBoolean(DAILY_STEPS_BOOL, true);
+        editor.putBoolean(WEEKLY_STEPS_BOOL, true);
+        editor.putBoolean(HIGHEST_STEPS_BOOL, true);
+        editor.putBoolean(FIVE_KM_BOOL, true);
+
+        editor.apply();
+
+
         ShutdownReceiver shutdownReceiver = new ShutdownReceiver();
         IntentFilter filter = new IntentFilter(Intent.ACTION_SHUTDOWN);
         registerReceiver(shutdownReceiver, filter);
@@ -153,7 +173,7 @@ public class StepCounterService extends Service implements SensorEventListener {
             stepDiff = currentSteps - initialSteps;
             totalSteps += stepDiff + 1;
             saveData();
-
+            achievementDisplay();
         }
 
         if(totalSteps >= 5000) {
@@ -165,34 +185,76 @@ public class StepCounterService extends Service implements SensorEventListener {
     }
 
     private void checkAchievements() {
-        // if(!dailyStepsMessageShown)
-        //      show message
-        //      dailyStepsMessageShown = true;
-        //      (at end of day reset dailyStepsMessageShown)
+        // get shared prefs
+        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+
+        //check that this hasn't already been triggered
+        boolean boolValue = sharedPreferences.getBoolean(DAILY_STEPS_BOOL, true);
+        if(boolValue) {
+            //congrats message
+
+            //set bool to false
+            editor = sharedPreferences.edit();
+            editor.putBoolean(DAILY_STEPS_BOOL, false);
+            editor.apply();
+
+            //      (at end of day set dailyStepsBool = true)
+        }
 
 
+
+        //check that this hasn't already been triggered
+        boolValue = sharedPreferences.getBoolean(WEEKLY_STEPS_BOOL, true);
+        if(boolValue) {
+            weekStepsGoal();
+        }
+
+        boolValue = sharedPreferences.getBoolean(HIGHEST_STEPS_BOOL, true);
+        if(boolValue) {
+            //check if steps are greater than best steps
+            // if yes
+            highestSteps();
+        }
+
+        boolValue = sharedPreferences.getBoolean(FIVE_KM_BOOL, true);
+        if(boolValue) {
+            //check if steps are greater >= 7143
+            // if yes
+            fiveKm();
+        }
     }
 
     private void weekStepsGoal() {
-        // if(totalSteps >= 5000) {
-        //      if(stepsInRow = 7)
-                    // update display nodes
+        //      add one to count
+        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        int currentValue = sharedPreferences.getInt(STEPS_IN_ROW, 0);
+
+        editor = sharedPreferences.edit();
+        editor.putInt(STEPS_IN_ROW, currentValue + 1);
+        editor.apply();
+
+        //      if(stepsInRow >= 7)
                     // congrats message
-        //                    // (at end of day reset this and reset node display)
+                    // weeklyStepsBool = false;
+        //                    // (at end of day reset count and progress bar and
+        //                    weeklyStepsBool = true)
         //        // }
     }
 
     private void highestSteps() {
         // if(totalSteps > highestStepsvalue)
-        //  switch bool to false check for rest of day
+        //  highestStepsBool = false
         //  congrats
-        //  (if shared pref bool is false set total Steps to highest steps value, switch bool to true
+        //   at end of day
+        //   (if shared pref totalStepsBool is false set total Steps to highest steps value
+        //   , switch bool to true)
     }
 
-    private void FiveKm() {
+    private void fiveKm() {
         //if(totalSteps > 7143
         // congrats
-        // dont check anymore
+        // fiveKmBool = false;
+        // at end of day set FiveKmBool true
     }
 
     @Override
@@ -234,10 +296,39 @@ public class StepCounterService extends Service implements SensorEventListener {
     }
 
     public void resetAtStartOfDay() {
+        // end of day challenge logic
+        challengeTasks();
         sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        // this should reset shared preference
+        editor = sharedPreferences.edit();
         totalSteps = 0;
+        editor.putFloat(STEPS_TODAY, totalSteps);
+
+
+        editor.apply();
+
 
     }
+
+    private void challengeTasks() {
+
+        //weekly steps
+        // reset weekly count and progress bar
+
+        //highest steps
+        // if (HIGHEST_STEPS_BOOL = false)
+        //      set new highest steps value to todays steps
+
+
+        // reset booleans
+        editor.putBoolean(DAILY_STEPS_BOOL, true);
+        editor.putBoolean(WEEKLY_STEPS_BOOL, true);
+        editor.putBoolean(HIGHEST_STEPS_BOOL, true);
+        editor.putBoolean(FIVE_KM_BOOL, true);
+
+    }
+
+
 
     public void rebootSetup() {
         sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
@@ -251,5 +342,17 @@ public class StepCounterService extends Service implements SensorEventListener {
 
 
         Log.d("DEBUG================", "reboot setup called");
+    }
+
+
+    public void achievementDisplay() {
+        Notification notification = new NotificationCompat.Builder(this, ACHIEVEMENTS_CHANNEL)
+                .setSmallIcon(R.drawable.achievementicon)
+                .setContentTitle("Achievement")
+                .setContentText("hello")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .build();
+
+        newNotificationManager.notify(2, notification);
     }
 }
