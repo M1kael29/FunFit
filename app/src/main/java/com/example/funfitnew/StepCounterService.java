@@ -165,29 +165,12 @@ public class StepCounterService extends Service implements SensorEventListener {
     }
 
     private void checkAchievements() {
-        todayStepsGoal();
+        // if(!dailyStepsMessageShown)
+        //      show message
+        //      dailyStepsMessageShown = true;
+        //      (at end of day reset dailyStepsMessageShown)
 
-        // today progress
-        // update progress bar
-        //      give congrats message
 
-        // week all > 5000
-        //      update today node
-        // if 7 days in a row congrats (at endof day reset node display and number)
-        //
-
-        // highest steps
-        // stepsToday > highest ever
-        //      congratulate
-        //      switch bool to not check this for the day anymore
-        // at end of day save that value
-
-    }
-
-    private void todayStepsGoal() {
-        // update progress bar
-        // if(totalSteps >= 5000) {
-        //      give congrats message
     }
 
     private void weekStepsGoal() {
@@ -204,6 +187,12 @@ public class StepCounterService extends Service implements SensorEventListener {
         //  switch bool to false check for rest of day
         //  congrats
         //  (if shared pref bool is false set total Steps to highest steps value, switch bool to true
+    }
+
+    private void FiveKm() {
+        //if(totalSteps > 7143
+        // congrats
+        // dont check anymore
     }
 
     @Override
