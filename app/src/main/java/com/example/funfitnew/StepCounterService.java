@@ -41,6 +41,7 @@ public class StepCounterService extends Service implements SensorEventListener {
     public static final String HIGHEST_STEPS_BOOL = "highestStepsBool";
     public static final String FIVE_KM_BOOL = "fiveKmBool";
     public static final String STEPS_IN_ROW = "stepInRow";
+    public static final String HIGHEST_STEPS_VALUE = "highestStepsValue";
     private static float stepsAtLastSave;
     private static final int STEPS_OFFSET = 10;
     private static float totalSteps;
@@ -173,7 +174,6 @@ public class StepCounterService extends Service implements SensorEventListener {
             stepDiff = currentSteps - initialSteps;
             totalSteps += stepDiff + 1;
             saveData();
-            achievementDisplay();
         }
 
         if(totalSteps >= 5000) {
@@ -192,7 +192,7 @@ public class StepCounterService extends Service implements SensorEventListener {
         boolean boolValue = sharedPreferences.getBoolean(DAILY_STEPS_BOOL, true);
         if(boolValue) {
             //congrats message
-
+            achievementDisplay("day");
             //set bool to false
             editor = sharedPreferences.edit();
             editor.putBoolean(DAILY_STEPS_BOOL, false);
@@ -212,15 +212,19 @@ public class StepCounterService extends Service implements SensorEventListener {
         boolValue = sharedPreferences.getBoolean(HIGHEST_STEPS_BOOL, true);
         if(boolValue) {
             //check if steps are greater than best steps
-            // if yes
-            highestSteps();
+            if(totalSteps > sharedPreferences.getFloat(HIGHEST_STEPS_VALUE, 5000)) {
+                // if yes
+                highestSteps();
+            }
+
         }
 
         boolValue = sharedPreferences.getBoolean(FIVE_KM_BOOL, true);
         if(boolValue) {
             //check if steps are greater >= 7143
-            // if yes
-            fiveKm();
+            if(totalSteps >= 7143) {
+                fiveKm();
+            }
         }
     }
 
@@ -233,27 +237,34 @@ public class StepCounterService extends Service implements SensorEventListener {
         editor.putInt(STEPS_IN_ROW, currentValue + 1);
         editor.apply();
 
-        //      if(stepsInRow >= 7)
-                    // congrats message
-                    // weeklyStepsBool = false;
-        //                    // (at end of day reset count and progress bar and
-        //                    weeklyStepsBool = true)
-        //        // }
+        if(sharedPreferences.getInt(STEPS_IN_ROW, 0) >= 7) {
+            // congrats message
+            achievementDisplay("week");
+            // weeklyStepsBool = false;
+            editor.putBoolean(WEEKLY_STEPS_BOOL, false);
+            editor.apply();
+            //                    // (at end of day reset count and progress bar and
+            //                    weeklyStepsBool = true)
+        }
     }
 
     private void highestSteps() {
-        // if(totalSteps > highestStepsvalue)
+
         //  highestStepsBool = false
-        //  congrats
+        editor.putBoolean(HIGHEST_STEPS_BOOL, false);
+        editor.apply();
+        achievementDisplay("highest");
         //   at end of day
         //   (if shared pref totalStepsBool is false set total Steps to highest steps value
         //   , switch bool to true)
     }
 
     private void fiveKm() {
-        //if(totalSteps > 7143
         // congrats
+        achievementDisplay("fiveKm");
         // fiveKmBool = false;
+        editor.putBoolean(FIVE_KM_BOOL, false);
+        editor.apply();
         // at end of day set FiveKmBool true
     }
 
@@ -311,13 +322,30 @@ public class StepCounterService extends Service implements SensorEventListener {
     }
 
     private void challengeTasks() {
+        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+
+
+
+
 
         //weekly steps
-        // reset weekly count and progress bar
+        if(sharedPreferences.getBoolean(WEEKLY_STEPS_BOOL, true) == false) {
+            // reset weekly count and progress bar
+            editor.putInt(STEPS_IN_ROW, 0);
+            editor.apply();
+        }
+
 
         //highest steps
         // if (HIGHEST_STEPS_BOOL = false)
-        //      set new highest steps value to todays steps
+        if(sharedPreferences.getBoolean(HIGHEST_STEPS_BOOL, true) == false) {
+            // set new highest steps value to today's steps
+            editor.putFloat(HIGHEST_STEPS_VALUE, totalSteps);
+            editor.apply();
+        }
+
 
 
         // reset booleans
@@ -325,7 +353,7 @@ public class StepCounterService extends Service implements SensorEventListener {
         editor.putBoolean(WEEKLY_STEPS_BOOL, true);
         editor.putBoolean(HIGHEST_STEPS_BOOL, true);
         editor.putBoolean(FIVE_KM_BOOL, true);
-
+        editor.apply();
     }
 
 
@@ -345,11 +373,34 @@ public class StepCounterService extends Service implements SensorEventListener {
     }
 
 
-    public void achievementDisplay() {
+    public void achievementDisplay(String achievement) {
+
+        String title = "title";
+        String text = "text";
+
+        switch (achievement) {
+            case "day":
+                title = "Daily Step Achievement";
+                text = "Congratulations! You took 5000 steps today. Way to go!";
+                break;
+            case "week":
+                title = "7 Days in A Row Achievement";
+                text = "Congratulations! You took 5000 steps, 7 days in a row. You're on a roll!";
+                break;
+            case "highest":
+                title = "Highest Step Achievement";
+                text = "Great Work! You have beaten your step high score!";
+                break;
+            case "fiveKm":
+                title = "5km Distance Achievement";
+                text = "Fantastic Job! You have travelled 5km today.";
+                break;
+
+        }
         Notification notification = new NotificationCompat.Builder(this, ACHIEVEMENTS_CHANNEL)
                 .setSmallIcon(R.drawable.achievementicon)
-                .setContentTitle("Achievement")
-                .setContentText("hello")
+                .setContentTitle(title)
+                .setContentText(text)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .build();
 
