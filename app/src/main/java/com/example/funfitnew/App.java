@@ -4,6 +4,7 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.Build;
+import android.util.Log;
 
 public class App extends Application {
     public static final String ACHIEVEMENTS_CHANNEL = "achievementsChannel";
@@ -12,6 +13,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
+        Log.d("DEBUG================", "app OnCreate called");
         createNotificationChannels();
     }
 

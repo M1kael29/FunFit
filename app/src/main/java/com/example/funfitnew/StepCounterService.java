@@ -109,12 +109,21 @@ public class StepCounterService extends Service implements SensorEventListener {
         sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
-        editor.putBoolean(DAILY_STEPS_BOOL, true);
-        editor.putBoolean(WEEKLY_STEPS_BOOL, true);
-        editor.putBoolean(HIGHEST_STEPS_BOOL, true);
-        editor.putBoolean(FIVE_KM_BOOL, true);
+        // if bools exist
+        // do nothing
+        // else
+        if(sharedPreferences.contains(WEEKLY_STEPS_BOOL)) {
+            // do nothing
+            Log.d("DEBUG================", "bools already exist");
 
-        editor.apply();
+        } else {
+            editor.putBoolean(DAILY_STEPS_BOOL, true);
+            editor.putBoolean(WEEKLY_STEPS_BOOL, true);
+            editor.putBoolean(HIGHEST_STEPS_BOOL, true);
+            editor.putBoolean(FIVE_KM_BOOL, true);
+            editor.apply();
+            Log.d("DEBUG================", "bools added");
+        }
 
 
         ShutdownReceiver shutdownReceiver = new ShutdownReceiver();
@@ -176,7 +185,7 @@ public class StepCounterService extends Service implements SensorEventListener {
             saveData();
         }
 
-        if(totalSteps >= 5000) {
+        if(totalSteps >= 50) {
             checkAchievements();
         }
 
@@ -212,7 +221,7 @@ public class StepCounterService extends Service implements SensorEventListener {
         boolValue = sharedPreferences.getBoolean(HIGHEST_STEPS_BOOL, true);
         if(boolValue) {
             //check if steps are greater than best steps
-            if(totalSteps > sharedPreferences.getFloat(HIGHEST_STEPS_VALUE, 5000)) {
+            if(totalSteps > sharedPreferences.getFloat(HIGHEST_STEPS_VALUE, 100)) {
                 // if yes
                 highestSteps();
             }
@@ -235,7 +244,10 @@ public class StepCounterService extends Service implements SensorEventListener {
 
         editor = sharedPreferences.edit();
         editor.putInt(STEPS_IN_ROW, currentValue + 1);
+        editor.putBoolean(WEEKLY_STEPS_BOOL, false);
         editor.apply();
+        Log.d("DEBUG================", String.valueOf
+                (sharedPreferences.getInt(STEPS_IN_ROW, 0)));
 
         if(sharedPreferences.getInt(STEPS_IN_ROW, 0) >= 7) {
             // congrats message
