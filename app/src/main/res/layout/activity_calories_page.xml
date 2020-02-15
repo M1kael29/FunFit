@@ -65,7 +65,7 @@
                 android:layout_centerInParent="true"
                 android:paddingBottom="270dp"
                 android:max="300"
-                android:progress="300"
+                android:progress="200"
                 android:progressDrawable="@drawable/progresscircle"
                 android:textAlignment="center">
 

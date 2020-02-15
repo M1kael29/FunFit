@@ -6,12 +6,17 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.Image;
 import android.preference.PreferenceManager;
+import android.text.Editable;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -38,6 +43,7 @@ public class StepsDatabase extends SQLiteOpenHelper {
     public static final String YEAR = "Year";
     public static final String WEEK = "Week";
     public static final String STEPCOUNT = "StepCount";
+    public static Bitmap PROFILEIMAGE = null;
     MainActivity main;
     int steps;
     SharedPreferences sharedPreferences;
@@ -54,7 +60,8 @@ public class StepsDatabase extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_NAME + " (" + ENTRY_ID + " INTEGER PRIMARY KEY" +
                 " AUTOINCREMENT, " + DAY + " TEXT, " + MONTH + " TEXT, "
-                + YEAR + " TEXT, " + WEEK + " TEXT, "+ STEPCOUNT + " INTEGER);");
+                + YEAR + " TEXT, " + WEEK + " TEXT, "+ STEPCOUNT + " INTEGER);" +
+                "PROFILEPIC" + PROFILEIMAGE);
 
     }
 

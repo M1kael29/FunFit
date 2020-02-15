@@ -9,9 +9,11 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -30,9 +32,12 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -68,7 +73,7 @@ public class MainActivity extends Activity implements SensorEventListener {
             testBg.setVisibility(View.VISIBLE);
             rellay2.setVisibility(View.VISIBLE);
             rellay3.setVisibility(View.VISIBLE);
-            Welcome.setVisibility(View.INVISIBLE);
+            Welcome.setVisibility(View.INVISIBLE);;
         }
     };
 
@@ -89,13 +94,14 @@ public class MainActivity extends Activity implements SensorEventListener {
     SharedPreferences.Editor editor;
     TextView stepValue, caloriesValue, distanceValue;
     Button resetButton, todayButton, weekButton, monthButton, allTimeButton, updateEntryButton;
-    ProgressBar stepProgressBar;
+    ProgressBar stepProgressBar, calorieProgressBar, distanceProgressBar;
+    ImageButton imgButton;
+    Bitmap bitmapTest = null;
     float currentDaySteps;
     float stepDistance = 0.7f;
     float caloriesPerStep = 0.04f;
     StepsDatabase db;
     private static MainActivity instance;
-    SwipeRefreshLayout refreshLayout;
     public static final String STEPS_TOTAL = "stepsTotal";
 
     boolean mBounded;
@@ -159,7 +165,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         @Override
         public void onServiceDisconnected(ComponentName name) {
             Toast.makeText(MainActivity.this, "Service is disconnected",
-                    Toast.LENGTH_SHORT).show();
+                    Toast.LENGTH_SHORT);
             mBounded = false;
             stepCounterService = null;
         }
@@ -167,13 +173,13 @@ public class MainActivity extends Activity implements SensorEventListener {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             Toast.makeText(MainActivity.this, "Service is connected",
-                    Toast.LENGTH_SHORT).show();
+                    Toast.LENGTH_SHORT);
             mBounded = true;
             StepCounterService.LocalBinder mLocalBinder = (StepCounterService.LocalBinder)service;
             stepCounterService = mLocalBinder.getServerInstance();
         }
     };
-
+ 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -209,7 +215,6 @@ public class MainActivity extends Activity implements SensorEventListener {
         //resetStepToZero(00, 00, 10);
 
 
-        resetButton = findViewById(R.id.btnReset);
         stepValue = findViewById(R.id.tvStepsValue);
         caloriesValue = findViewById(R.id.tvCaloriesValue);
         distanceValue = findViewById(R.id.tvDistanceValue);
@@ -217,15 +222,15 @@ public class MainActivity extends Activity implements SensorEventListener {
         weekButton = findViewById(R.id.btnWeek);
         monthButton = findViewById(R.id.btnMonth);
         allTimeButton = findViewById(R.id.btnAllTime);
-        updateEntryButton = findViewById(R.id.btnUpdateEntry);
         stepProgressBar = findViewById(R.id.stepProgressBar);
+        calorieProgressBar = findViewById(R.id.CaloriesProgressBar);
+        distanceProgressBar = findViewById(R.id.distanceProgressBar);
+        imgButton = findViewById(R.id.imgView_logo);
 
-        resetButton.setOnClickListener(resetClickListener);
         todayButton.setOnClickListener(todayClickListener);
         weekButton.setOnClickListener(weekClickListener);
         monthButton.setOnClickListener(monthClickListener);
         allTimeButton.setOnClickListener(allTimeClickListener);
-        updateEntryButton.setOnClickListener(updateEntryClickListener);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
@@ -242,9 +247,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
             Uri selectedImage = data.getData();
-            Bitmap bitmaptest = null;
             try {
-                bitmaptest = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                bitmapTest = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
             }catch (FileNotFoundException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -252,8 +256,8 @@ public class MainActivity extends Activity implements SensorEventListener {
                 // TODO Auto-generated catch block
                 e.printStackTrace();}
 
-            ImageButton btn = (ImageButton) findViewById(R.id.imgView_logo);
-            btn.setImageBitmap(bitmaptest);
+            imgButton.setImageBitmap(bitmapTest);
+            db.PROFILEIMAGE = bitmapTest;
 
         }}
 
@@ -269,6 +273,11 @@ public class MainActivity extends Activity implements SensorEventListener {
         this.startForegroundService(new Intent(getApplicationContext(), StepCounterService.
                 class));
         instance = this;
+
+
+        if (db.PROFILEIMAGE != null ){
+            imgButton.setImageBitmap(db.PROFILEIMAGE);
+        }
     }
 
     public static MainActivity getInstance(){
@@ -330,6 +339,8 @@ public class MainActivity extends Activity implements SensorEventListener {
         caloriesValue.setText(strCalories);
         distanceValue.setText(strDistance);
         stepProgressBar.setProgress((int) currentDaySteps);
+        calorieProgressBar.setProgress((int) calories);
+        distanceProgressBar.setProgress((int) distance*1000);
     }
 
     @Override
@@ -354,8 +365,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
     // resets currentDaySteps and applies to text view
     private void resetSteps() {
-        currentDaySteps = 0;
-        stepValue.setText(String.valueOf(currentDaySteps));
+
     }
 
 //    public void addEntry() {
