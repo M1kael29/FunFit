@@ -97,8 +97,8 @@ public class StepCounterService extends Service implements SensorEventListener {
                 notificationIntent, 0);
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("FunFit")
-                .setContentText("example string")
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentText("Tracking Steps")
+                .setSmallIcon(R.drawable.shoe)
                 .setContentIntent(pendingIntent)
                 .build();
 
