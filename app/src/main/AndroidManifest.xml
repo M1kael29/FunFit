@@ -48,6 +48,7 @@
         <!-- </intent-filter> -->
         <!-- </receiver> -->
         <receiver android:name=".AddStepsToDbReceiver" />
+        <receiver android:name=".WakeServiceReceiver" />
 
         <service android:name=".StepCounterService" />
     </application>

@@ -28,6 +28,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -82,6 +83,9 @@ public class MainActivity extends Activity implements SensorEventListener {
 
     SensorManager sensorManager;
     SharedPreferences sharedPreferences;
+    AlarmManager alarmManager;
+    PendingIntent addToDbIntent;
+    PendingIntent wakeServiceIntent;
     SharedPreferences.Editor editor;
     TextView stepValue, caloriesValue, distanceValue;
     Button resetButton, todayButton, weekButton, monthButton, allTimeButton, updateEntryButton;
@@ -226,7 +230,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
 
-
+        setServiceAlarm();
 
         //addDummyData();
     }
@@ -256,6 +260,10 @@ public class MainActivity extends Activity implements SensorEventListener {
     @Override
     protected void onStart() {
         super.onStart();
+        startService();
+    }
+
+    public void startService() {
         Intent mIntent = new Intent(this, StepCounterService.class);
         bindService(mIntent, mConnection, BIND_AUTO_CREATE);
         this.startForegroundService(new Intent(getApplicationContext(), StepCounterService.
@@ -567,13 +575,25 @@ public class MainActivity extends Activity implements SensorEventListener {
         c.set(Calendar.HOUR_OF_DAY, hour);
         c.set(Calendar.MINUTE, minute);
         c.set(Calendar.SECOND, second);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AddStepsToDbReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 3, intent
+        addToDbIntent = PendingIntent.getBroadcast(this, 3, intent
                 , 0);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(),
-                pendingIntent);
+                addToDbIntent);
         Log.d("DEBUG================", "saveStepToDb done");
+    }
+
+    private void setServiceAlarm() {
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, WakeServiceReceiver.class);
+        wakeServiceIntent = PendingIntent.getBroadcast(this, 5, intent
+                , 0);
+        Calendar calendar = Calendar.getInstance();
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME,
+                SystemClock.elapsedRealtime() + 1000 * 10,
+                1000 * 10, wakeServiceIntent);
+        Log.d("DEBUG================", "setServiceAlarm called");
     }
 
 //    private void resetStepToZero(int hour, int minute, int second) {
