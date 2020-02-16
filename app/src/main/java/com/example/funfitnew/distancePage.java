@@ -122,6 +122,33 @@ public class distancePage extends AppCompatActivity {
         day7 *= stepDistance;
         currentDay *= stepDistance;
 
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+        switch (day) {
+            case Calendar.SUNDAY:
+                day1 = (int) currentDay;
+                break;
+            case Calendar.MONDAY:
+                day2 = (int) currentDay;
+                break;
+            case Calendar.TUESDAY:
+                day3 = (int) currentDay;
+                break;
+            case Calendar.WEDNESDAY:
+                day4 = (int) currentDay;
+                break;
+            case Calendar.THURSDAY:
+                day5 = (int) currentDay;
+                break;
+            case Calendar.FRIDAY:
+                day6 = (int) currentDay;
+                break;
+            case Calendar.SATURDAY:
+                day7 = (int) currentDay;
+                break;
+        }
+
         progressBar.setProgress((int) currentDay);
 
 

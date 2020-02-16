@@ -121,6 +121,33 @@ public class caloriesPage extends AppCompatActivity {
         day7 *= caloriesPerStep;
         currentDay *= caloriesPerStep;
 
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+        switch (day) {
+            case Calendar.SUNDAY:
+                day1 = (int) currentDay;
+                break;
+            case Calendar.MONDAY:
+                day2 = (int) currentDay;
+                break;
+            case Calendar.TUESDAY:
+                day3 = (int) currentDay;
+                break;
+            case Calendar.WEDNESDAY:
+                day4 = (int) currentDay;
+                break;
+            case Calendar.THURSDAY:
+                day5 = (int) currentDay;
+                break;
+            case Calendar.FRIDAY:
+                day6 = (int) currentDay;
+                break;
+            case Calendar.SATURDAY:
+                day7 = (int) currentDay;
+                break;
+        }
+
         progressBar.setProgress((int) currentDay);
 
         String cals = String.format("%.2f", currentDay);
