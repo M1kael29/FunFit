@@ -16,12 +16,15 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+
+import java.util.Calendar;
 
 import static com.example.funfitnew.App.ACHIEVEMENTS_CHANNEL;
 import static com.example.funfitnew.MainActivity.CHANNEL_ID;
@@ -51,6 +54,8 @@ public class StepCounterService extends Service implements SensorEventListener {
     private boolean getInitialSteps;
     private float stepDiff;
     private NotificationManagerCompat newNotificationManager;
+    AlarmManager alarmManager;
+    PendingIntent wakeServiceIntent;
 
 
 
@@ -131,6 +136,7 @@ public class StepCounterService extends Service implements SensorEventListener {
         registerReceiver(shutdownReceiver, filter);
 
 
+        setServiceAlarm();
 
         Toast.makeText(this, "DONE", Toast.LENGTH_SHORT).show();
 
@@ -185,7 +191,7 @@ public class StepCounterService extends Service implements SensorEventListener {
             saveData();
         }
 
-        if(totalSteps >= 5000) {
+        if(totalSteps >= 50) {
             checkAchievements();
         }
 
@@ -343,7 +349,8 @@ public class StepCounterService extends Service implements SensorEventListener {
 
 
         //weekly steps
-        if(sharedPreferences.getBoolean(WEEKLY_STEPS_BOOL, true) == false) {
+        if((sharedPreferences.getBoolean(WEEKLY_STEPS_BOOL, true) == false) &&
+                (sharedPreferences.getInt(STEPS_IN_ROW, 0) >= 7)) {
             // reset weekly count and progress bar
             editor.putInt(STEPS_IN_ROW, 0);
             editor.apply();
@@ -417,5 +424,17 @@ public class StepCounterService extends Service implements SensorEventListener {
                 .build();
 
         newNotificationManager.notify(2, notification);
+    }
+
+    private void setServiceAlarm() {
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, WakeServiceReceiver.class);
+        wakeServiceIntent = PendingIntent.getBroadcast(this, 5, intent
+                , 0);
+        Calendar calendar = Calendar.getInstance();
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME,
+                SystemClock.elapsedRealtime() + 10000,
+                3600000, wakeServiceIntent);
+        Log.d("DEBUG================", "setServiceAlarm called");
     }
 }

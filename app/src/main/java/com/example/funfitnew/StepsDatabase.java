@@ -42,6 +42,7 @@ public class StepsDatabase extends SQLiteOpenHelper {
     public static final String MONTH = "Month";
     public static final String YEAR = "Year";
     public static final String WEEK = "Week";
+    public static final String DAY_OF_WEEK = "DayOfWeek";
     public static final String STEPCOUNT = "StepCount";
     public static Bitmap PROFILEIMAGE = null;
     MainActivity main;
@@ -60,7 +61,8 @@ public class StepsDatabase extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_NAME + " (" + ENTRY_ID + " INTEGER PRIMARY KEY" +
                 " AUTOINCREMENT, " + DAY + " TEXT, " + MONTH + " TEXT, "
-                + YEAR + " TEXT, " + WEEK + " TEXT, "+ STEPCOUNT + " INTEGER);" +
+                + YEAR + " TEXT, " + WEEK + " TEXT, " + DAY_OF_WEEK + " TEXT, "
+                + STEPCOUNT + " INTEGER);" +
                 "PROFILEPIC" + PROFILEIMAGE);
 
     }
@@ -71,13 +73,15 @@ public class StepsDatabase extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertDataSpecific(String day, String week, String month, String year, int steps) {
+    public void insertDataSpecific(String day, String week, String month, String year, String dayOfWeek,
+                                   int steps) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(DAY, day);
         contentValues.put(WEEK, week);
         contentValues.put(MONTH, month);
         contentValues.put(YEAR, year);
+        contentValues.put(DAY_OF_WEEK, dayOfWeek);
         contentValues.put(STEPCOUNT, steps);
         db.insert(TABLE_NAME, null, contentValues);
     }
@@ -150,6 +154,10 @@ public class StepsDatabase extends SQLiteOpenHelper {
         sdf = new SimpleDateFormat("ww", Locale.getDefault());
         String currentWeek = sdf.format(currentDate);
         contentValues.put(WEEK, currentWeek);
+        //Day of Week
+        sdf = new SimpleDateFormat("EEEE", Locale.getDefault());
+        String dayOfWeek = sdf.format(currentDate);
+        contentValues.put(DAY_OF_WEEK, dayOfWeek);
         //Steps
         float stepCount = sharedPreferences.getFloat(main.STEPS_TODAY, 0);
         contentValues.put(STEPCOUNT, stepCount);
