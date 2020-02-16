@@ -18,6 +18,7 @@ public class achievementsPage extends AppCompatActivity {
     public static final String todaySteps = "steps";
     public static final String SHARED_PREFS = "funfit_prefs";
     public static final String highestSteps = "highestStepsValue";
+    public static final String weeklySteps = "stepInRow";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,29 +42,33 @@ public class achievementsPage extends AppCompatActivity {
         calsHighest = findViewById(R.id.highestCalsText);
         distanceHighest = findViewById(R.id.highestDistanceText);
 
-        float highest, today, distance, highestCals, highestDistance;
+        float highest, today, distance, highestCals, highestDistance, weekly;
         highest = sharedPreferences.getFloat(highestSteps, 0);
         today = sharedPreferences.getFloat(todaySteps, 0);
+        weekly = sharedPreferences.getInt(weeklySteps, 0);
         distance = today * .7f;
         highestCals = highest * .04f;
         highestDistance = highest * .7f;
 
         String strToday = String.format("%.0f", today);
-        String strWeek = String.format("%.0f", today);
+        String strWeek = String.format("%.0f", weekly);
         String strHighestStep = String.format("%.0f", highest);
         String strHighestCals = String.format("%.0f", highestCals);
         String strHighestDistance = String.format("%.0f", highestDistance);
         String strDistance = String.format("%.2f", distance);
 
 
-        stepsToday.setText(strToday +"/5000");
-        distanceToday.setText(strDistance + "m/5km");
+
+        stepsToday.setText(strToday +"/100");
+        distanceToday.setText(strDistance + "m/100m");
         stepsHighest.setText(strHighestStep);
         calsHighest.setText(strHighestCals + "Cals");
         distanceHighest.setText(strHighestDistance + "m");
+        stepsWeekly.setText(strWeek + "/7");
 
 
         dailyProgressBar.setProgress((int) sharedPreferences.getFloat(todaySteps, 0));
         distanceProgressBar.setProgress((int) distance);
+        weeklyProgressBar.setProgress((int) weekly);
     }
 }

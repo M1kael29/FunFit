@@ -64,7 +64,7 @@
                 android:layout_height="420dp"
                 android:layout_centerInParent="true"
                 android:paddingBottom="270dp"
-                android:max="5000"
+                android:max="100"
                 android:progress="125"
                 android:progressDrawable="@drawable/progresscircle"
                 android:textAlignment="center">
