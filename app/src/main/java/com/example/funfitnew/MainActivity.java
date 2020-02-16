@@ -140,6 +140,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         @Override
         public void onClick(View v) {
             moveToAchievements();
+            db.addData();
         }
     };
 
@@ -235,9 +236,8 @@ public class MainActivity extends Activity implements SensorEventListener {
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
 
-        setServiceAlarm();
 
-        //addDummyData();
+        addDummyData();
     }
 
 
@@ -595,17 +595,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         Log.d("DEBUG================", "saveStepToDb done");
     }
 
-    private void setServiceAlarm() {
-        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, WakeServiceReceiver.class);
-        wakeServiceIntent = PendingIntent.getBroadcast(this, 5, intent
-                , 0);
-        Calendar calendar = Calendar.getInstance();
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME,
-                SystemClock.elapsedRealtime() + 1000 * 10,
-                1000 * 10, wakeServiceIntent);
-        Log.d("DEBUG================", "setServiceAlarm called");
-    }
+
 
 //    private void resetStepToZero(int hour, int minute, int second) {
 //        Calendar c = Calendar.getInstance();
@@ -673,15 +663,13 @@ public class MainActivity extends Activity implements SensorEventListener {
     }
 
     private void addDummyData() {
-        db.insertDataSpecific("28", "09", "12", "2019", 100);
-        db.insertDataSpecific("29", "09", "12", "2019", 100);
-        db.insertDataSpecific("01", "09", "12", "2019", 100);
-        db.insertDataSpecific("25", "09", "04", "2019", 100);
-        db.insertDataSpecific("01", "09", "04", "2019", 100);
-        db.insertDataSpecific("30", "09", "04", "2019", 100);
-        db.insertDataSpecific("01", "20", "01", "1992", 100);
-        db.insertDataSpecific("02", "20", "01", "1992", 100);
-        db.insertDataSpecific("03", "20", "01", "1992", 100);
+        db.insertDataSpecific("16", "08", "02", "2020", "Sunday", 100);
+        db.insertDataSpecific("17", "08", "02", "2020", "Monday",100);
+        db.insertDataSpecific("18", "08", "02", "2020", "Tuesday",100);
+        db.insertDataSpecific("19", "08", "02", "2020", "Wednesday",100);
+        db.insertDataSpecific("20", "08", "02", "2020", "Thursday",100);
+        db.insertDataSpecific("21", "08", "02", "2020", "Friday",100);
+        //db.insertDataSpecific("22", "08", "02", "2020", "Saturday",100);
     }
 
     private float calculateCalories(){
