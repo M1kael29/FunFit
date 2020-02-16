@@ -91,29 +91,32 @@
                         android:layout_width="match_parent"
                         android:layout_height="6dp"
                         android:layout_alignParentBottom="true"
-                        style="?android:progressBarStyleHorizontal"
-                        android:max="5000"
-                        android:progress="500"
+                        android:max="1"
+                        android:progress="1"
                         android:progressDrawable="@drawable/secondaryprogressline">
 
                     </ProgressBar>
 
+
                     <ProgressBar
+                        android:id="@+id/todayProgBar"
                         android:layout_width="match_parent"
                         android:layout_height="6dp"
                         android:layout_alignParentBottom="true"
                         style="?android:progressBarStyleHorizontal"
-                        android:max="5"
-                        android:progress="5"
-                        android:progressDrawable="@drawable/progressline">
+                        android:max="5000"
+                        android:progress="500"
+                        android:progressTint="@color/gradStop">
 
                     </ProgressBar>
+
 
 
                 </RelativeLayout>
 
 
                 <TextView
+                    android:id="@+id/todayText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
@@ -173,21 +176,21 @@
                         android:layout_width="match_parent"
                         android:layout_height="6dp"
                         android:layout_alignParentBottom="true"
-                        style="?android:progressBarStyleHorizontal"
-                        android:max="7"
-                        android:progress="7"
+                        android:max="1"
+                        android:progress="1"
                         android:progressDrawable="@drawable/secondaryprogressline">
 
                     </ProgressBar>
 
                     <ProgressBar
+                        android:id="@+id/weeklyProgBar"
                         android:layout_width="match_parent"
                         android:layout_height="6dp"
                         android:layout_alignParentBottom="true"
-                        style="?android:progressBarStyleHorizontal"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                         android:max="7"
-                        android:progress="7"
-                        android:progressDrawable="@drawable/progressline">
+                        android:progress="5"
+                        android:progressTint="@color/gradStop">
 
                     </ProgressBar>
 
@@ -196,6 +199,7 @@
 
 
                 <TextView
+                    android:id="@+id/weeklyText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
@@ -223,7 +227,89 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="Monthly Goal"
+                        android:text="Distance Goal"
+                        android:textAlignment="center"
+                        android:textSize="16dp"
+                        android:fontFamily="sans-serif-medium"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="15dp"
+                    android:paddingStart="33dp">
+
+                    <ImageView
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:paddingTop="5dp"
+                        android:src="@drawable/distanceicon" />
+
+                </LinearLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="10dp">
+
+
+                    <ProgressBar
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"
+                        android:layout_alignParentBottom="true"
+                        android:max="1"
+                        android:progress="1"
+                        android:progressDrawable="@drawable/secondaryprogressline">
+
+                    </ProgressBar>
+
+                    <ProgressBar
+                        android:id="@+id/distanceProgBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"
+                        android:layout_alignParentBottom="true"
+                        style="?android:progressBarStyleHorizontal"
+                        android:max="5000"
+                        android:progress="20"
+                        android:progressTint="@color/gradStop">
+
+                    </ProgressBar>
+
+
+                </RelativeLayout>
+
+
+                <TextView
+                    android:id="@+id/distanceText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingTop="50dp"
+                    android:text="30/30"
+                    android:textSize="16dp"
+                    android:fontFamily="sans-serif-medium"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/achieve4"
+                android:layout_width="120dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="320dp"
+                app:cardCornerRadius="23dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Highest Steps"
                         android:textAlignment="center"
                         android:textSize="16dp"
                         android:fontFamily="sans-serif-medium"/>
@@ -250,38 +336,137 @@
                     android:padding="10dp">
 
 
-                    <ProgressBar
+                </RelativeLayout>
+
+
+                <TextView
+                    android:id="@+id/highestStepsText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingTop="60dp"
+                    android:text="5762/5000"
+                    android:textSize="16dp"
+                    android:fontFamily="sans-serif-medium"/>
+
+            </androidx.cardview.widget.CardView>
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/achieve5"
+                android:layout_width="120dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="320dp"
+                android:layout_marginLeft="125dp"
+                app:cardCornerRadius="23dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="6dp"
-                        android:layout_alignParentBottom="true"
-                        style="?android:progressBarStyleHorizontal"
-                        android:max="30"
-                        android:progress="20"
-                        android:progressDrawable="@drawable/secondaryprogressline">
+                        android:layout_height="match_parent"
+                        android:text="Highest Cals"
+                        android:textAlignment="center"
+                        android:textSize="16dp"
+                        android:fontFamily="sans-serif-medium"/>
 
-                    </ProgressBar>
+                </LinearLayout>
 
-                    <ProgressBar
-                        android:layout_width="match_parent"
-                        android:layout_height="6dp"
-                        android:layout_alignParentBottom="true"
-                        style="?android:progressBarStyleHorizontal"
-                        android:max="30"
-                        android:progress="30"
-                        android:progressDrawable="@drawable/progressline">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="15dp"
+                    android:paddingStart="33dp">
 
-                    </ProgressBar>
+                    <ImageView
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:paddingTop="5dp"
+                        android:src="@drawable/hearticon" />
+
+                </LinearLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="10dp">
 
 
                 </RelativeLayout>
 
 
                 <TextView
+                    android:id="@+id/highestCalsText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:paddingTop="50dp"
+                    android:paddingTop="60dp"
+                    android:text="7/7"
+                    android:textSize="16dp"
+                    android:fontFamily="sans-serif-medium"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/achieve6"
+                android:layout_width="120dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="320dp"
+                android:layout_alignParentRight="true"
+                app:cardCornerRadius="23dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Highest Dist"
+                        android:textAlignment="center"
+                        android:textSize="16dp"
+                        android:fontFamily="sans-serif-medium"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="15dp"
+                    android:paddingStart="33dp">
+
+                    <ImageView
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:paddingTop="5dp"
+                        android:src="@drawable/distanceicon" />
+
+                </LinearLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="10dp">
+
+
+                </RelativeLayout>
+
+
+                <TextView
+                    android:id="@+id/highestDistanceText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingTop="60dp"
                     android:text="30/30"
                     android:textSize="16dp"
                     android:fontFamily="sans-serif-medium"/>

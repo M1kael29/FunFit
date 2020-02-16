@@ -52,6 +52,7 @@ public class caloriesPage extends AppCompatActivity {
         distanceToday = findViewById(R.id.tvStepsValue);
         distanceDate = findViewById(R.id.tvStepsDate);
 
+
         float day1, day2, day3, day4, day5, day6, day7, num = 0.04f;
 
 
