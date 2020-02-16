@@ -332,15 +332,16 @@ public class MainActivity extends Activity implements SensorEventListener {
 
         float calories = calculateCalories();
         float distance = calculateDistance();
+        float bigDistance = distance * 1000;
         String strCalories = String.format("%.2f", calories);
         String strDistance = String.format("%.2f", distance);
         String strSteps = String.format("%.0f", currentDaySteps);
         stepValue.setText(strSteps);
-        caloriesValue.setText(strCalories);
-        distanceValue.setText(strDistance);
+        caloriesValue.setText(strCalories + "Cal");
+        distanceValue.setText(strDistance +"km");
         stepProgressBar.setProgress((int) currentDaySteps);
         calorieProgressBar.setProgress((int) calories);
-        distanceProgressBar.setProgress((int) distance*1000);
+        distanceProgressBar.setProgress((int) bigDistance);
     }
 
     @Override
