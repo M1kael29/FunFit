@@ -140,7 +140,7 @@ public class stepPage extends AppCompatActivity {
 
         String step = String.format("%.0f", currentDay);
 
-        String strSteps = String.format(step + "/5000");
+        String strSteps = String.format(step + "/100");
         distanceToday.setText(strSteps);
         distanceDate.setText(date_n);
 
@@ -158,7 +158,7 @@ public class stepPage extends AppCompatActivity {
 
         ArrayList<BarEntry> moreThan5000 = new ArrayList<>();
 
-        BarDataSet barDataSet = new BarDataSet(barEntries, "Distance Travelled");
+        BarDataSet barDataSet = new BarDataSet(barEntries, "Steps Taken");
 
         int i=0;
         int o=0;

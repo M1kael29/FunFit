@@ -11,18 +11,25 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.ChartData;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 
 import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class caloriesPage extends AppCompatActivity {
-
 
 
     BarChart barChart;
@@ -80,32 +87,30 @@ public class caloriesPage extends AppCompatActivity {
         String currentYear = sdf.format(currentDate);
         Cursor res = db.getWeek(currentWeek, currentMonth, currentYear);
 
-        if(res.getCount() == 0) {
+        if (res.getCount() == 0) {
             Log.d("DEBUG================", "no data");
             return;
-        }
-
-        else {
+        } else {
             while (res.moveToNext()) {
-                if(res.getString(5).equals("Sunday")) {
+                if (res.getString(5).equals("Sunday")) {
                     day1 = res.getInt(6);
                 }
-                if(res.getString(5).equals("Monday")) {
+                if (res.getString(5).equals("Monday")) {
                     day2 = res.getInt(6);
                 }
-                if(res.getString(5).equals("Tuesday")) {
+                if (res.getString(5).equals("Tuesday")) {
                     day3 = res.getInt(6);
                 }
-                if(res.getString(5).equals("Wednesday")) {
+                if (res.getString(5).equals("Wednesday")) {
                     day4 = res.getInt(6);
                 }
-                if(res.getString(5).equals("Thursday")) {
+                if (res.getString(5).equals("Thursday")) {
                     day5 = res.getInt(6);
                 }
-                if(res.getString(5).equals("Friday")) {
+                if (res.getString(5).equals("Friday")) {
                     day6 = res.getInt(6);
                 }
-                if(res.getString(5).equals("Saturday")) {
+                if (res.getString(5).equals("Saturday")) {
                     day7 = res.getInt(6);
                 }
                 Log.d("DEBUG================", "not a day");
@@ -152,7 +157,17 @@ public class caloriesPage extends AppCompatActivity {
 
         String cals = String.format("%.2f", currentDay);
 
-        String strSteps = String.format(cals + "/300Cal");
+        final ArrayList<String> xAxisLabel = new ArrayList<>();
+        xAxisLabel.add("Mon");
+        xAxisLabel.add("Tue");
+        xAxisLabel.add("Wed");
+        xAxisLabel.add("Thu");
+        xAxisLabel.add("Fri");
+        xAxisLabel.add("Sat");
+        xAxisLabel.add("Sun");
+
+
+        String strSteps = String.format(cals + "/30Cal");
         distanceToday.setText(strSteps);
         distanceDate.setText(date_n);
 
@@ -165,32 +180,41 @@ public class caloriesPage extends AppCompatActivity {
         barEntries.add(new BarEntry(27.1f, day6));
         barEntries.add(new BarEntry(28.1f, day7));
 
+        BarDataSet barDataSet = new BarDataSet(barEntries, "Calories Burnt");
+
+        IndexAxisValueFormatter formatter = new IndexAxisValueFormatter();
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setGranularity(1f);
+        xAxis.setValueFormatter(formatter);
 
 
 
         ArrayList<BarEntry> moreThan5000 = new ArrayList<>();
 
-        BarDataSet barDataSet = new BarDataSet(barEntries, "Distance Travelled");
 
-        int i=0;
-        int o=0;
+        int i = 0;
+        int o = 0;
         o = barEntries.size();
 
-        while (i<o){
-            if (barEntries.indexOf(i) >= 2){
+        while (i < o) {
+            if (barEntries.indexOf(i) >= 2) {
 
                 barDataSet.setColor(i, Color.GREEN);
 
-            }
-            else{
+            } else {
 
             }
             i++;
         }
 
+
+
         BarData theData = new BarData(barDataSet);
         barChart.setData(theData);
 
         barChart.setTouchEnabled(true);
+
     }
+
 }
+

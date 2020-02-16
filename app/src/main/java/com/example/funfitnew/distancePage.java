@@ -152,7 +152,7 @@ public class distancePage extends AppCompatActivity {
         progressBar.setProgress((int) currentDay);
 
 
-        String strSteps = String.format(currentDay + "m/5km");
+        String strSteps = String.format(currentDay + "m/100m");
         distanceToday.setText(strSteps);
         distanceDate.setText(date_n);
 
