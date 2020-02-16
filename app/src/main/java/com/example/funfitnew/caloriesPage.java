@@ -3,8 +3,10 @@ package com.example.funfitnew;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -38,6 +40,7 @@ public class caloriesPage extends AppCompatActivity {
     public static final String STEPS_6 = "steps";
     public static final String STEPS_7 = "steps";
     String date_n = new SimpleDateFormat("dd/MM/yy", Locale.getDefault()).format(new Date());
+    float caloriesPerStep = 0.04f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,21 +56,74 @@ public class caloriesPage extends AppCompatActivity {
         distanceDate = findViewById(R.id.tvStepsDate);
 
 
-        float day1, day2, day3, day4, day5, day6, day7, num = 0.04f;
+        int day1, day2, day3, day4, day5, day6, day7;
+        float currentDay;
 
+        day1 = 0;
+        day2 = 0;
+        day3 = 0;
+        day4 = 0;
+        day5 = 0;
+        day6 = 0;
+        day7 = 0;
+        currentDay = sharedPreferences.getFloat(MainActivity.STEPS_TODAY, 0);
 
-        day1 = sharedPreferences.getFloat(STEPS_1, 0) * num;
-        day2 = sharedPreferences.getFloat(STEPS_2, 0) * num;
-        day3 = sharedPreferences.getFloat(STEPS_3, 0) * num;
-        day4 = sharedPreferences.getFloat(STEPS_4, 0) * num;
-        day5 = sharedPreferences.getFloat(STEPS_5, 0) * num;
-        day6 = sharedPreferences.getFloat(STEPS_6, 0) * num;
-        day7 = sharedPreferences.getFloat(STEPS_7, 0) * num;
+        Date currentDate = new Date();
+        // Week
+        SimpleDateFormat sdf = new SimpleDateFormat("ww", Locale.getDefault());
+        String currentWeek = sdf.format(currentDate);
+        // Month
+        sdf = new SimpleDateFormat("MM", Locale.getDefault());
+        String currentMonth = sdf.format(currentDate);
+        // Year
+        sdf = new SimpleDateFormat("yyyy", Locale.getDefault());
+        String currentYear = sdf.format(currentDate);
+        Cursor res = db.getWeek(currentWeek, currentMonth, currentYear);
 
+        if(res.getCount() == 0) {
+            Log.d("DEBUG================", "no data");
+            return;
+        }
 
-        progressBar.setProgress((int) day1);
+        else {
+            while (res.moveToNext()) {
+                if(res.getString(5).equals("Sunday")) {
+                    day1 = res.getInt(6);
+                }
+                if(res.getString(5).equals("Monday")) {
+                    day2 = res.getInt(6);
+                }
+                if(res.getString(5).equals("Tuesday")) {
+                    day3 = res.getInt(6);
+                }
+                if(res.getString(5).equals("Wednesday")) {
+                    day4 = res.getInt(6);
+                }
+                if(res.getString(5).equals("Thursday")) {
+                    day5 = res.getInt(6);
+                }
+                if(res.getString(5).equals("Friday")) {
+                    day6 = res.getInt(6);
+                }
+                if(res.getString(5).equals("Saturday")) {
+                    day7 = res.getInt(6);
+                }
+                Log.d("DEBUG================", "not a day");
+            }
+        }
 
-        String cals = String.format("%.2f", day1);
+        day1 *= caloriesPerStep;
+        day2 *= caloriesPerStep;
+        day3 *= caloriesPerStep;
+        day4 *= caloriesPerStep;
+        day5 *= caloriesPerStep;
+        day6 *= caloriesPerStep;
+        day7 *= caloriesPerStep;
+        currentDay *= caloriesPerStep;
+
+        progressBar.setProgress((int) currentDay);
+
+        String cals = String.format("%.2f", currentDay);
 
         String strSteps = String.format(cals + "/300Cal");
         distanceToday.setText(strSteps);

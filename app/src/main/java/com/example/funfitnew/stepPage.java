@@ -54,15 +54,16 @@ public class stepPage extends AppCompatActivity {
         distanceDate = findViewById(R.id.tvStepsDate);
 
         int day1, day2, day3, day4, day5, day6, day7;
+        float currentDay;
 
-        day1 = 100;
-        day2 = 200;
-        day3 = 300;
+        day1 = 0;
+        day2 = 0;
+        day3 = 0;
         day4 = 0;
         day5 = 0;
         day6 = 0;
         day7 = 0;
-
+        currentDay = sharedPreferences.getFloat(MainActivity.STEPS_TODAY, 0);
 
         Date currentDate = new Date();
         // Week
@@ -108,11 +109,11 @@ public class stepPage extends AppCompatActivity {
             }
         }
 
-        progressBar.setProgress( day1);
+        progressBar.setProgress((int) currentDay);
 
-        //String step = String.format("%.0f", day1);
+        String step = String.format("%.0f", currentDay);
 
-        String strSteps = String.format("/5000");
+        String strSteps = String.format(step + "/5000");
         distanceToday.setText(strSteps);
         distanceDate.setText(date_n);
 

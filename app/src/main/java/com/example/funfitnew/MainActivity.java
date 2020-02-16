@@ -663,13 +663,13 @@ public class MainActivity extends Activity implements SensorEventListener {
     }
 
     private void addDummyData() {
-        db.insertDataSpecific("16", "08", "02", "2020", "Sunday", 100);
-        db.insertDataSpecific("17", "08", "02", "2020", "Monday",100);
-        db.insertDataSpecific("18", "08", "02", "2020", "Tuesday",100);
-        db.insertDataSpecific("19", "08", "02", "2020", "Wednesday",100);
-        db.insertDataSpecific("20", "08", "02", "2020", "Thursday",100);
-        db.insertDataSpecific("21", "08", "02", "2020", "Friday",100);
-        //db.insertDataSpecific("22", "08", "02", "2020", "Saturday",100);
+        db.insertDataSpecific("16", "08", "02", "2020", "Sunday", 1350);
+        db.insertDataSpecific("17", "08", "02", "2020", "Monday",4500);
+        db.insertDataSpecific("18", "08", "02", "2020", "Tuesday",6780);
+        db.insertDataSpecific("19", "08", "02", "2020", "Wednesday",3000);
+        db.insertDataSpecific("20", "08", "02", "2020", "Thursday",470);
+        db.insertDataSpecific("21", "08", "02", "2020", "Friday",5900);
+        db.insertDataSpecific("22", "08", "02", "2020", "Saturday",3450);
     }
 
     private float calculateCalories(){

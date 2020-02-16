@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -32,6 +33,7 @@ public class distancePage extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     TextView distanceToday, distanceDate;
+    float stepDistance = 0.7f;
     public static final String SHARED_PREFS = "funfit_prefs";
     public static final String STEPS_1 = "steps";
     public static final String STEPS_2 = "steps";
@@ -55,21 +57,75 @@ public class distancePage extends AppCompatActivity {
         distanceToday = findViewById(R.id.tvStepsValue);
         distanceDate = findViewById(R.id.tvStepsDate);
 
-        float day1, day2, day3, day4, day5, day6, day7, num = 0.7f;
+        float day1, day2, day3, day4, day5, day6, day7;
+        float currentDay;
+
+        day1 = 0;
+        day2 = 0;
+        day3 = 0;
+        day4 = 0;
+        day5 = 0;
+        day6 = 0;
+        day7 = 0;
+        currentDay = sharedPreferences.getFloat(MainActivity.STEPS_TODAY, 0);
+
+        Date currentDate = new Date();
+        // Week
+        SimpleDateFormat sdf = new SimpleDateFormat("ww", Locale.getDefault());
+        String currentWeek = sdf.format(currentDate);
+        // Month
+        sdf = new SimpleDateFormat("MM", Locale.getDefault());
+        String currentMonth = sdf.format(currentDate);
+        // Year
+        sdf = new SimpleDateFormat("yyyy", Locale.getDefault());
+        String currentYear = sdf.format(currentDate);
+        Cursor res = db.getWeek(currentWeek, currentMonth, currentYear);
+
+        if(res.getCount() == 0) {
+            Log.d("DEBUG================", "no data");
+            return;
+        }
+
+        else {
+            while (res.moveToNext()) {
+                if(res.getString(5).equals("Sunday")) {
+                    day1 = res.getInt(6);
+                }
+                if(res.getString(5).equals("Monday")) {
+                    day2 = res.getInt(6);
+                }
+                if(res.getString(5).equals("Tuesday")) {
+                    day3 = res.getInt(6);
+                }
+                if(res.getString(5).equals("Wednesday")) {
+                    day4 = res.getInt(6);
+                }
+                if(res.getString(5).equals("Thursday")) {
+                    day5 = res.getInt(6);
+                }
+                if(res.getString(5).equals("Friday")) {
+                    day6 = res.getInt(6);
+                }
+                if(res.getString(5).equals("Saturday")) {
+                    day7 = res.getInt(6);
+                }
+                Log.d("DEBUG================", "not a day");
+            }
+        }
+
+        day1 *= stepDistance;
+        day2 *= stepDistance;
+        day3 *= stepDistance;
+        day4 *= stepDistance;
+        day5 *= stepDistance;
+        day6 *= stepDistance;
+        day7 *= stepDistance;
+        currentDay *= stepDistance;
+
+        progressBar.setProgress((int) currentDay);
 
 
-        day1 = sharedPreferences.getFloat(STEPS_1, 0) * num;
-        day2 = sharedPreferences.getFloat(STEPS_2, 0) * num;
-        day3 = sharedPreferences.getFloat(STEPS_3, 0) * num;
-        day4 = sharedPreferences.getFloat(STEPS_4, 0) * num;
-        day5 = sharedPreferences.getFloat(STEPS_5, 0) * num;
-        day6 = sharedPreferences.getFloat(STEPS_6, 0) * num;
-        day7 = sharedPreferences.getFloat(STEPS_7, 0) * num;
-
-        progressBar.setProgress((int) day1);
-
-
-        String strSteps = String.format(day1 + "m/5km");
+        String strSteps = String.format(currentDay + "m/5km");
         distanceToday.setText(strSteps);
         distanceDate.setText(date_n);
 

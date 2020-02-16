@@ -191,7 +191,7 @@ public class StepCounterService extends Service implements SensorEventListener {
             saveData();
         }
 
-        if(totalSteps >= 50) {
+        if(totalSteps >= 100) {
             checkAchievements();
         }
 
